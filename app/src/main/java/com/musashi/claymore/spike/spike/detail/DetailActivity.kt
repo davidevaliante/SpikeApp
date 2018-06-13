@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.pm.ActivityInfo
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import aqua.extensions.*
 import assignViewModel
 import com.musashi.claymore.spike.spike.DetailedDescription
@@ -39,6 +40,10 @@ class DetailActivity : AppCompatActivity() {
             relatedWebSites = "http://bit.ly/SNAIBONUS100@http://bit.ly/BonusLOTTOMATICA@")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        supportActionBar?.hide()
+        makeStatusbarTranslucent()
+
         setContentView(R.layout.activity_detail)
         viewModel = ViewModelProviders.of(this).get(DetailActivityViewModel::class.java)
 

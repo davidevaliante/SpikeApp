@@ -3,11 +3,7 @@ package aqua.extensions
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 
-fun AppCompatActivity.hideActionBar(){
-    val decorView = window.decorView
-    val uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN
-    decorView.systemUiVisibility = uiOptions
-}
+
 
 fun View.invertVisibility(){
     when(this.visibility){
