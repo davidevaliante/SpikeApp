@@ -191,12 +191,13 @@ class DescriptionDetailFragment : Fragment(),SlotDetailDisplayer {
                     rootLayout.relatedLinks -> rootLayout.fourtArrow.setImageDrawable(downIcon)
                 }
             }
+            rootView.nestedScrollView.smoothScrollTo(0, 0)
 
             val t = AutoTransition()
             t.duration=duration
             t.addListener(transitionEndedNotifier())
             TransitionManager.beginDelayedTransition(rootLayout,t)
-            rootView.headerImgGroup.invertVisibility()
+            rootView.headerImgGroup.visibility=View.VISIBLE
             rootView.firstArrow.setImageDrawable(ContextCompat.getDrawable(activity!!, R.drawable.ic_down_arrow))
             this.invertVisibility()
             switchToDownArrowRelativeTo(this)
@@ -212,17 +213,19 @@ class DescriptionDetailFragment : Fragment(),SlotDetailDisplayer {
                 }
             }
 
-            val scrollTo = (this.getParent().parent.parent as View).top + this.getTop()
-            rootView.nestedScrollView.post { rootView.nestedScrollView.smoothScrollTo(0, scrollTo) }
+            val scrollTo = this.top
+            rootView.nestedScrollView.smoothScrollTo(0, scrollTo)
 
             val t = AutoTransition()
             t.duration=duration
             t.addListener(transitionEndedNotifier())
             TransitionManager.beginDelayedTransition(rootLayout,t)
-            rootView.headerImgGroup.invertVisibility()
+            rootView.headerImgGroup.visibility=View.GONE
             this.invertVisibility()
             switchToUpArrowRelativeTo(this)
         }
+
+
 
         if (this.visibility == View.GONE && !isTransitioning)
             this.expandandButtonTransition(expandDuration)
