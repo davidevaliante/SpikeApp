@@ -79,6 +79,8 @@ class DetailRoot : AppCompatActivity() {
     // per rimuovere/aggiungere il listner a seconda del lifecycle
     val customOffsetChangedListener by lazy { collapseLayoutBehaviours() }
 
+    val screenDensity by lazy { resources.displayMetrics.density }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         makeStatusbarTranslucent()
@@ -140,13 +142,13 @@ class DetailRoot : AppCompatActivity() {
     fun collapseLayoutBehaviours():AppBarLayout.OnOffsetChangedListener{
         fun playButtonGoesDown(){
             AdditiveAnimator.animate(fab).setDuration(1000)
-                    .y(point.heightPixels.toFloat()-400f)
+                    .y(point.heightPixels.toFloat()-120.fromDpiToPixelsBasedOnScreenSize())
                     .start()
         }
 
         fun playButtongoesUp(){
             AdditiveAnimator.animate(fab).setDuration(1000)
-                    .y(fabInitialPosition[1].toFloat())
+                    .y(fabInitialPosition[1].toFloat()+16.fromDpiToPixelsBasedOnScreenSize())
                     .start()
         }
 
@@ -169,45 +171,38 @@ class DetailRoot : AppCompatActivity() {
         }
 
         fun shareSlideIn(){
-            Do after 500 milliseconds {
 
                 // Prepare the View for the animation
-                fabShare.setVisibility(View.VISIBLE);
-                fabShare.setAlpha(0.0f);
+                fabShare.visibility=View.VISIBLE
+                fabShare.alpha=0.0f
 
                 // Start the animation
                 fabShare.animate()
-                        .translationY(point.heightPixels/48f)
+                        .translationY(point.heightPixels/10*7f)
                         .alpha(1.0f)
-                        .setListener(null).duration=1500
-            }
+                        .setListener(null).duration=1000
         }
 
         fun shareSlideOut(){
-            Do after 500 milliseconds {
-                // Prepare the View for the animation
-                fabShare.setVisibility(View.GONE);
 
                 // Start the animation
                 fabShare.animate()
-                        .translationY(-point.heightPixels / 48f)
+                        .translationY(-point.heightPixels/10*7f)
                         .alpha(0.0f)
                         .setListener(null).duration = 500
-            }
         }
 
         fun youtubeButtonSlideIn(){
-            Do after 100 milliseconds {
-
+            Do after 300 milliseconds {
                 // Prepare the View for the animation
-                fabYoutube.setVisibility(View.VISIBLE);
-                fabYoutube.setAlpha(0.0f);
+                fabYoutube.visibility = View.VISIBLE
+                fabYoutube.alpha = 0.0f
 
                 // Start the animation
                 fabYoutube.animate()
-                        .translationY((point.heightPixels/24f))
+                        .translationY((point.heightPixels / 10f * 6))
                         .alpha(1.0f)
-                        .setListener(null).duration=1500
+                        .setListener(null).duration = 1000
             }
         }
 
@@ -215,11 +210,11 @@ class DetailRoot : AppCompatActivity() {
             Do after 100 milliseconds {
 
                 // Prepare the View for the animation
-                fabYoutube.setVisibility(View.GONE);
+                fabYoutube.visibility=View.GONE
 
-// Start the animation
+                // Start the animation
                 fabYoutube.animate()
-                        .translationY((-point.heightPixels/24f))
+                        .translationY((-point.heightPixels/10f*6))
                         .alpha(0.0f)
                         .setListener(null).duration=500
             }
@@ -292,4 +287,6 @@ class DetailRoot : AppCompatActivity() {
     }
 
 
+    // helpers
+    fun Int.fromDpiToPixelsBasedOnScreenSize()=Math.round(this*screenDensity)
 }
