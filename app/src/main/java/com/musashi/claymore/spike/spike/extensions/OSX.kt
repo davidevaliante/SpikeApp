@@ -12,7 +12,9 @@ import android.view.inputmethod.InputMethodManager
 import android.view.WindowManager
 import android.os.Build
 
-
+fun View.onClick(func:()->Unit){
+    this.setOnClickListener { func() }
+}
 
 fun Activity.makeStatusbarTranslucent(){
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView
+    android:id="@+id/complexScrollView"
+    style="@style/NestedScrollBarStyle"
+    android:verticalScrollbarPosition="left"
+    android:scrollbarThumbVertical="@drawable/scrollbar"
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="0dp"
+    android:layout_weight="0.8"
+    android:paddingBottom="16dp"
+    android:layout_marginTop="16dp"
+    android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:id="@+id/descriptionButtonGroup"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/descriptionHeader"
+                android:text="Descrizione"
+                style="@style/Header" />
+
+            <TextView
+                android:id="@+id/descriptionText"
+                android:text="@string/lorem"
+                style="@style/TextContent" />
+        </LinearLayout>
+
+        <View
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/dark_gradient"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"/>
+
+        <LinearLayout
+            android:id="@+id/tecnicalsButtonGroup"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/tecnicalsHeader"
+                android:text="Scheda tecnica"
+                style="@style/Header" />
+
+            <TextView
+                android:id="@+id/tecnicalsText"
+                android:text="@string/lorem"
+                style="@style/TextContent" />
+        </LinearLayout>
+
+        <View
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/dark_gradient"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"/>
+
+        <LinearLayout
+            android:paddingBottom="16dp"
+            android:id="@+id/tipsButtonGroup"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/tipsHeader"
+                android:text="Consigli di gioco"
+                style="@style/Header" />
+
+            <LinearLayout
+                android:id="@+id/tipsCardGroup"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <View
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/dark_gradient"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"/>
+
+        <TextView
+            android:id="@+id/footerText"
+            style="@style/TextContent" />
+
+
+    </LinearLayout>
+
+
+</android.support.v4.widget.NestedScrollView>
