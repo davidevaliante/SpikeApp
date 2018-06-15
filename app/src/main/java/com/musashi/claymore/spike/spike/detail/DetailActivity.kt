@@ -13,6 +13,9 @@ import com.musashi.claymore.spike.spike.R
 import com.musashi.claymore.spike.spike.R.id.detailActivityContainer
 import com.musashi.claymore.spike.spike.constants.DetailStatus
 import kotlinx.android.synthetic.main.activity_detail.*
+import android.graphics.Typeface
+import kotlinx.android.synthetic.main.activity_detail_root.*
+
 
 class DetailActivity : AppCompatActivity() {
 
@@ -45,6 +48,10 @@ class DetailActivity : AppCompatActivity() {
         makeStatusbarTranslucent()
 
         setContentView(R.layout.activity_detail)
+
+
+
+
         viewModel = ViewModelProviders.of(this).get(DetailActivityViewModel::class.java)
 
         if (viewModel.state.value==null)
