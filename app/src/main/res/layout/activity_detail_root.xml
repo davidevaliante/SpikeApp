@@ -132,7 +132,7 @@
     </LinearLayout>
 
     <RelativeLayout
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="26dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -144,21 +144,17 @@
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"
-            android:layout_marginTop="16dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="8dp"
             app:backgroundTint="@color/darkRed"
             app:fabSize="normal"
-            android:layout_alignParentStart="true"
             app:srcCompat="@drawable/ic_play_button"/>
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fabShare"
-            android:layout_below="@id/relativeLayoutMiddleLine"
-            android:layout_centerVertical="true"
-            android:layout_marginTop="70dp"
+            android:layout_marginTop="-26dp"
             android:layout_marginStart="16dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -170,8 +166,7 @@
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fabYoutube"
-            android:layout_below="@id/fabShare"
-            android:layout_marginTop="26dp"
+            android:layout_marginTop="-26dp"
             android:layout_marginStart="16dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
