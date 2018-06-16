@@ -1,53 +1,35 @@
 package com.musashi.claymore.spike.spike.detailtwo
 
-import android.animation.Animator
-import android.animation.LayoutTransition
+
 import android.content.Context
 import android.content.pm.ActivityInfo
-import android.graphics.Point
 import android.graphics.Typeface
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.Toolbar
 import com.musashi.claymore.spike.spike.R
 import kotlinx.android.synthetic.main.activity_detail_root.*
 import kotlinx.android.synthetic.main.detail_scrollview.*
-import kotlinx.android.synthetic.main.activity_detail_root.view.*
-import android.support.design.widget.CoordinatorLayout
-import android.support.design.widget.FloatingActionButton
 import android.support.transition.*
-import android.support.v4.view.animation.FastOutLinearInInterpolator
-import android.support.v4.view.animation.LinearOutSlowInInterpolator
-import android.text.Html
 import android.text.Spanned
 import android.util.DisplayMetrics
-import android.util.Half.toFloat
-import android.view.Gravity
-import android.view.View
-import android.widget.LinearLayout
-import com.musashi.claymore.spike.spike.detailtwo.scrollbehaviours.FancyBehavior
+import android.view.*
 import at.wirecube.additiveanimations.additive_animator.AdditiveAnimator
 import com.bumptech.glide.Glide
 import com.musashi.claymore.spike.spike.DetailedDescription
-import com.musashi.claymore.spike.spike.R.id.*
-import kotlinx.android.synthetic.main.fragment_description_detail.*
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper
-import android.widget.TextView
-import android.view.LayoutInflater
 import aqua.extensions.*
+import com.musashi.claymore.spike.spike.R.id.*
 import com.musashi.claymore.spike.spike.TrySlotActivity
 import fromHtml
-import kotlinx.android.synthetic.main.detail_scrollview.view.*
 import kotlinx.android.synthetic.main.tip_card.view.*
 
 
 class DetailRoot : AppCompatActivity() {
     // string a fine pagina
-    val footer = "<p>Se avete preso dimestichezza e volete sfruttare un ottimo&nbsp;<strong>Bonus di Benvenuto</strong>&nbsp;per giocare a questa slot, vi invito a registrarvi su questi casinò che dispongono dei migliori Bonus esclusivi.</p>"
+    private val footer = "<p>Se avete preso dimestichezza e volete sfruttare un ottimo&nbsp;<strong>Bonus di Benvenuto</strong>&nbsp;per giocare a questa slot, vi invito a registrarvi su questi casinò che dispongono dei migliori Bonus esclusivi.</p>"
     // classe d'esempio
-    val descrizioneEsempio = DetailedDescription(
+    private val descrizioneEsempio = DetailedDescription(
             shortName ="pyramid",
     fullName="pyramidSlot",
     description="<p>La Slot&nbsp;<strong>Pyramid: Quest</strong>&nbsp;<strong>for Immortality&nbsp;</strong>è una slot a tema egiziano del produttore NetEnt. Ha 720 linee di pagamento, in modalità SuperPlay. Ossia qualsiasi combinazione di 3 o più simboli uguali da sinistra a destra è pagante.</p>" +
@@ -70,53 +52,29 @@ class DetailRoot : AppCompatActivity() {
     relatedWebSites = "http://bit.ly/SNAIBONUS100@http://bit.ly/BonusLOTTOMATICA@")
 
     // container posizione iniziale Floating action button
-    var fabInitialPosition = IntArray(2)
-    val point : DisplayMetrics by lazy { DisplayMetrics() }
+    private var fabInitialPosition = IntArray(2)
+    private val point : DisplayMetrics by lazy { DisplayMetrics() }
 
     // per il controllo movimento Fab
-    var expandedModeShouldBePlayed = true
-    var collapsedModeShouldBePlayed = true
+    private var expandedModeShouldBePlayed = true
+    private var collapsedModeShouldBePlayed = true
     // per rimuovere/aggiungere il listner a seconda del lifecycle
-    val customOffsetChangedListener by lazy { collapseLayoutBehaviours() }
+    private val customOffsetChangedListener by lazy { collapseLayoutBehaviours() }
 
-    val screenDensity by lazy { resources.displayMetrics.density }
+    private val screenDensity by lazy { resources.displayMetrics.density }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         makeStatusbarTranslucent()
         setContentView(R.layout.activity_detail_root)
-        windowManager.defaultDisplay.getMetrics(point)
 
-        // caricamento dati dalla classe finta
-        Glide.with(this).load(descrizioneEsempio.imageLink).into(collapsingImg)
-        descriptionText.text = descrizioneEsempio.description?.fromHtml()
-        tecnicalsText.text = buildTecnicalString()
-        addViewsToTipsLayout()
-        footerText.text= footer.fromHtml()
+        bindDataToUI()
+        layoutSetup()
+        setAllOnClickListners()
 
-        // funzioni per settare il layout in modo giusto per API < 21
-        complexScrollView.verticalScrollbarPosition = View.SCROLLBAR_POSITION_LEFT
-        setSupportActionBar(myToolbar)
-        setToolbarFont()
-        fab.getLocationOnScreen(fabInitialPosition)
-
-        fabShare.setOnClickListener { showInfo("share pagina su whatsapp/telegram/Facebook") }
-        fabYoutube.setOnClickListener { showInfo("va alla pagina con il video di youtube correlato") }
-
-        // effetti ed animazioni
         playImageOverLayEffect()
 
         appBarLayout.addOnOffsetChangedListener(customOffsetChangedListener)
-
-        fab.setOnClickListener { goTo<TrySlotActivity>() }
-
-        // clickListners
-        backArrow.setOnClickListener {
-            appBarLayout.removeOnOffsetChangedListener(customOffsetChangedListener)
-            finish()
-        }
-
-
     }
 
     override fun onDestroy() {
@@ -129,29 +87,57 @@ class DetailRoot : AppCompatActivity() {
         super.onResume()
     }
 
-    fun addViewsToTipsLayout(){
-        val tipsList = descrizioneEsempio.playTips?.split("@")
-        tipsList?.forEach {
-            val cardToAdd = LayoutInflater.from(this).inflate(R.layout.tip_card, tipsCardGroup, false)
-            cardToAdd.tipsText.text = it.fromHtml()
+    private fun bindDataToUI(){
+        fun addViewsToTipsLayout(){
+            val tipsList = descrizioneEsempio.playTips?.split("@")
+            tipsList?.forEach {
+                val cardToAdd = LayoutInflater.from(this).inflate(R.layout.tip_card, tipsCardGroup, false)
+                cardToAdd.tipsText.text = it.fromHtml()
 
-            tipsCardGroup.addView(cardToAdd)
+                tipsCardGroup.addView(cardToAdd)
+            }
+        }
+
+        // caricamento dati dalla classe finta
+        Glide.with(this).load(descrizioneEsempio.imageLink).into(collapsingImg)
+        descriptionText.text = descrizioneEsempio.description?.fromHtml()
+        tecnicalsText.text = buildTecnicalString()
+        addViewsToTipsLayout()
+        footerText.text= footer.fromHtml()
+        myToolbar.title="Pyramid: Quest for immortality"
+    }
+
+    private fun layoutSetup(){
+        windowManager.defaultDisplay.getMetrics(point)
+        // funzioni per settare il layout in modo giusto per API < 21
+        complexScrollView.verticalScrollbarPosition = View.SCROLLBAR_POSITION_LEFT
+        setSupportActionBar(myToolbar)
+        setToolbarFont()
+        fab.getLocationOnScreen(fabInitialPosition)
+    }
+
+    private fun setAllOnClickListners(){
+        fabShare.setOnClickListener { showInfo("share pagina su whatsapp/telegram/Facebook") }
+        fabYoutube.setOnClickListener { showInfo("va alla pagina con il video di youtube correlato") }
+        fab.setOnClickListener { goTo<TrySlotActivity>() }
+        // clickListners
+        backArrow.setOnClickListener {
+            appBarLayout.removeOnOffsetChangedListener(customOffsetChangedListener)
+            finish()
         }
     }
 
-    fun collapseLayoutBehaviours():AppBarLayout.OnOffsetChangedListener{
+    private fun collapseLayoutBehaviours():AppBarLayout.OnOffsetChangedListener{
         fun playButtonGoesDown(){
             AdditiveAnimator.animate(fab).setDuration(1000)
                     .y(point.heightPixels.toFloat()-120.fromDpiToPixelsBasedOnScreenSize())
                     .start()
         }
-
         fun playButtongoesUp(){
             AdditiveAnimator.animate(fab).setDuration(1000)
                     .y(fabInitialPosition[1].toFloat()+16.fromDpiToPixelsBasedOnScreenSize())
                     .start()
         }
-
         fun backArrowFadeIn(){
             Do after 100 milliseconds {
                 val t = Fade(Fade.MODE_IN)
@@ -160,7 +146,6 @@ class DetailRoot : AppCompatActivity() {
                 backArrow.visibility= View.VISIBLE
             }
         }
-
         fun backArrowFadeOut(){
             Do after 100 milliseconds {
                 val t = Fade(Fade.MODE_OUT)
@@ -169,7 +154,6 @@ class DetailRoot : AppCompatActivity() {
                 backArrow.visibility= View.INVISIBLE
             }
         }
-
         fun shareSlideIn(){
 
                 // Prepare the View for the animation
@@ -182,7 +166,6 @@ class DetailRoot : AppCompatActivity() {
                         .alpha(1.0f)
                         .setListener(null).duration=1000
         }
-
         fun shareSlideOut(){
 
                 // Start the animation
@@ -191,7 +174,6 @@ class DetailRoot : AppCompatActivity() {
                         .alpha(0.0f)
                         .setListener(null).duration = 500
         }
-
         fun youtubeButtonSlideIn(){
             Do after 300 milliseconds {
                 // Prepare the View for the animation
@@ -205,7 +187,6 @@ class DetailRoot : AppCompatActivity() {
                         .setListener(null).duration = 1000
             }
         }
-
         fun youtubeButtonSlideOut(){
             Do after 100 milliseconds {
 
@@ -219,6 +200,39 @@ class DetailRoot : AppCompatActivity() {
                         .setListener(null).duration=500
             }
         }
+        fun searchBarFadeIn(){
+            Do after 300 milliseconds {
+                val t = Fade(Fade.MODE_IN)
+                t.duration=1000
+                TransitionManager.beginDelayedTransition(coordinator,t)
+                searchFieldGroup.visibility=View.VISIBLE
+            }
+        }
+        fun searchBarFadeOut(){
+            Do after 10 milliseconds {
+                val t = Fade(Fade.MODE_OUT)
+                t.duration=100
+                TransitionManager.beginDelayedTransition(coordinator,t)
+                searchFieldGroup.visibility=View.GONE
+            }
+        }
+        fun reverseGradientFadeIn(){
+            Do after 200 milliseconds {
+                val t = Fade(Fade.MODE_IN)
+                t.duration=1600
+                TransitionManager.beginDelayedTransition(coordinator,t)
+                reverse_gradient.visibility=View.VISIBLE
+            }
+        }
+        fun reverseGradientFadeOut(){
+            Do after 100 milliseconds {
+                val t = Fade(Fade.MODE_OUT)
+                t.duration=800
+                TransitionManager.beginDelayedTransition(coordinator,t)
+                reverse_gradient.visibility=View.INVISIBLE
+            }
+        }
+
         return AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
             when {
                 Math.abs(verticalOffset) - appBarLayout.totalScrollRange==0 -> {
@@ -230,6 +244,8 @@ class DetailRoot : AppCompatActivity() {
                         youtubeButtonSlideIn()
                         shareSlideIn()
                         playButtonGoesDown()
+                        searchBarFadeOut()
+                        reverseGradientFadeOut()
                     }
                 }
                 verticalOffset == 0 -> {
@@ -240,24 +256,26 @@ class DetailRoot : AppCompatActivity() {
                         youtubeButtonSlideOut()
                         shareSlideOut()
                         playButtongoesUp()
+                        searchBarFadeIn()
+                        reverseGradientFadeIn()
                     }
                 }
                 else -> {
-                    // Somewhere in between
+                    // qualche punto in mezzo
                 }
             }
         }
     }
 
-    fun setToolbarFont(){
+    private fun setToolbarFont(){
         collapsingToolbarLayout
-        .setCollapsedTitleTypeface(Typeface.createFromAsset(this.assets, "raleway_regular.ttf"))
+        .setCollapsedTitleTypeface(Typeface.createFromAsset(this.assets, "merriweather_regular.ttf"))
 
         collapsingToolbarLayout
-        .setExpandedTitleTypeface(Typeface.createFromAsset(this.assets, "montserrat_bold.ttf"))
+        .setExpandedTitleTypeface(Typeface.createFromAsset(this.assets, "merriweather_regular.ttf"))
     }
 
-    fun playImageOverLayEffect(){
+    private fun playImageOverLayEffect(){
         // overlay
         Do after 700 milliseconds {
             val t = Fade(Fade.MODE_IN)
@@ -267,15 +285,13 @@ class DetailRoot : AppCompatActivity() {
         }
     }
 
-    fun buildTecnicalString():Spanned{
+    private fun buildTecnicalString():Spanned{
         var s =""
         descrizioneEsempio.technicals?.split("@")?.forEach {
             s+="<p>- $it\n\n</p>"
         }
         return s.fromHtml()
     }
-
-
 
     override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase))
@@ -285,8 +301,6 @@ class DetailRoot : AppCompatActivity() {
         onBackPressed()
         return true
     }
-
-
     // helpers
-    fun Int.fromDpiToPixelsBasedOnScreenSize()=Math.round(this*screenDensity)
+    private fun Int.fromDpiToPixelsBasedOnScreenSize()=Math.round(this*screenDensity)
 }
