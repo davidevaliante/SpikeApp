@@ -1,6 +1,7 @@
 package com.musashi.claymore.spike.spike.detailtwo
 
 
+
 import android.content.Context
 import android.content.pm.ActivityInfo
 import android.graphics.Typeface
@@ -129,14 +130,21 @@ class DetailRoot : AppCompatActivity() {
 
     private fun collapseLayoutBehaviours():AppBarLayout.OnOffsetChangedListener{
         fun playButtonGoesDown(){
+            fab.visibility=View.VISIBLE
             AdditiveAnimator.animate(fab).setDuration(1000)
                     .y(point.heightPixels.toFloat()-120.fromDpiToPixelsBasedOnScreenSize())
+                    .alpha(1.0f)
                     .start()
+            //fab.visibility=View.VISIBLE
+
         }
         fun playButtongoesUp(){
             AdditiveAnimator.animate(fab).setDuration(1000)
-                    .y(fabInitialPosition[1].toFloat()+16.fromDpiToPixelsBasedOnScreenSize())
+                    .y(fabInitialPosition[1].toFloat()-26.fromDpiToPixelsBasedOnScreenSize())
+                    .alpha(0.0f)
                     .start()
+            //fab.visibility=View.GONE
+
         }
         fun backArrowFadeIn(){
             Do after 100 milliseconds {
@@ -232,6 +240,18 @@ class DetailRoot : AppCompatActivity() {
                 reverse_gradient.visibility=View.INVISIBLE
             }
         }
+        fun hidePlayButtonCenter(){
+            playButtonCenter.visibility=View.GONE
+        }
+        fun showPlayButtonCenter(){
+            val t = Fade(Fade.MODE_IN)
+            t.duration=700
+            TransitionManager.beginDelayedTransition(coordinator,t)
+            playButtonCenter.visibility=View.VISIBLE
+        }
+
+
+
 
         return AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
             when {
@@ -246,6 +266,7 @@ class DetailRoot : AppCompatActivity() {
                         playButtonGoesDown()
                         searchBarFadeOut()
                         reverseGradientFadeOut()
+                        hidePlayButtonCenter()
                     }
                 }
                 verticalOffset == 0 -> {
@@ -256,8 +277,10 @@ class DetailRoot : AppCompatActivity() {
                         youtubeButtonSlideOut()
                         shareSlideOut()
                         playButtongoesUp()
-                        searchBarFadeIn()
                         reverseGradientFadeIn()
+                        showPlayButtonCenter()
+                        searchBarFadeIn()
+
                     }
                 }
                 else -> {

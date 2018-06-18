@@ -22,7 +22,8 @@
         <activity
             android:name=".detailtwo.DetailRoot"
             android:theme="@style/DarkTheme" />
-        <activity android:name=".TrySlotActivity"></activity>
+        <activity android:name=".TrySlotActivity" />
+        <activity android:name=".homepage.HomePage"></activity>
     </application>
 
 </manifest>
