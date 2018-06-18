@@ -60,6 +60,7 @@
         <item name="android:textColor">@color/white</item>
         <item name="android:fontFamily">@font/montserrat_bold</item>
         <item name="android:background">@color/shaded_black_alpha_50</item>
+        <item name="android:layout_gravity">center</item>
 
     </style>
 
@@ -85,5 +86,6 @@
         <!--Any text styling can be done here-->
         <item name="android:textStyle">normal</item>
         <item name="android:fontFamily">@font/montserrat_bold</item>
+        <item name="android:layout_gravity">end</item>
     </style>
 </resources>
