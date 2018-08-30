@@ -12,9 +12,11 @@ import com.musashi.claymore.spike.spike.R
 import kotlinx.android.synthetic.main.activity_detail_root.*
 import kotlinx.android.synthetic.main.detail_scrollview.*
 import android.support.transition.*
+import android.support.v4.view.animation.FastOutSlowInInterpolator
 import android.text.Spanned
 import android.util.DisplayMetrics
 import android.view.*
+import android.view.animation.AnimationSet
 import at.wirecube.additiveanimations.additive_animator.AdditiveAnimator
 import com.bumptech.glide.Glide
 import com.musashi.claymore.spike.spike.DetailedDescription
@@ -76,6 +78,7 @@ class DetailRoot : AppCompatActivity() {
         playImageOverLayEffect()
 
         appBarLayout.addOnOffsetChangedListener(customOffsetChangedListener)
+
     }
 
     override fun onDestroy() {
@@ -101,6 +104,8 @@ class DetailRoot : AppCompatActivity() {
 
         // caricamento dati dalla classe finta
         Glide.with(this).load(descrizioneEsempio.imageLink).into(collapsingImg)
+        Glide.with(this).load("https://seeklogo.com/images/A/AAMS_Timone_Gioco_Sicuro-logo-8525C3341F-seeklogo.com.png")
+                .into(detail_aams_logo)
         descriptionText.text = descrizioneEsempio.description?.fromHtml()
         tecnicalsText.text = buildTecnicalString()
         addViewsToTipsLayout()
@@ -121,31 +126,42 @@ class DetailRoot : AppCompatActivity() {
         fabShare.setOnClickListener { showInfo("share pagina su whatsapp/telegram/Facebook") }
         fabYoutube.setOnClickListener { showInfo("va alla pagina con il video di youtube correlato") }
         fab.setOnClickListener { goTo<TrySlotActivity>() }
-        // clickListners
         backArrow.setOnClickListener {
             appBarLayout.removeOnOffsetChangedListener(customOffsetChangedListener)
             finish()
         }
+        playButtonCenter.setOnClickListener { goTo<TrySlotActivity>() }
+        descriptionHeader.setOnClickListener {
+            if(descriptionText.visibility==View.GONE) {
+                descriptionText.visibility = View.VISIBLE
+                descriptionHeader.setCompoundDrawablesWithIntrinsicBounds(null,null, getSupportDrawable(R.drawable.ic_up_arrow_red) ,null)
+            } else {
+                descriptionText.visibility=View.GONE
+                descriptionHeader.setCompoundDrawablesWithIntrinsicBounds(null,null, getSupportDrawable(R.drawable.ic_down_arrow_red) ,null)
+            }
+        }
+        tecnicalsHeader.setOnClickListener {
+            if (tecnicalsText.visibility == View.GONE) {
+                tecnicalsText.visibility = View.VISIBLE
+                tecnicalsHeader.setCompoundDrawablesWithIntrinsicBounds(null, null, getSupportDrawable(R.drawable.ic_up_arrow_red), null)
+            } else {
+                tecnicalsText.visibility = View.GONE
+                tecnicalsHeader.setCompoundDrawablesWithIntrinsicBounds(null, null, getSupportDrawable(R.drawable.ic_down_arrow_red), null)
+            }
+        }
+        tipsHeader.setOnClickListener {
+            if(tipsCardGroup.visibility==View.GONE) {
+                tipsCardGroup.visibility = View.VISIBLE
+                tipsHeader.setCompoundDrawablesWithIntrinsicBounds(null, null, getSupportDrawable(R.drawable.ic_up_arrow_red), null)
+            } else {
+                tipsCardGroup.visibility = View.GONE
+                tipsHeader.setCompoundDrawablesWithIntrinsicBounds(null,null, getSupportDrawable(R.drawable.ic_down_arrow_red) ,null)
+            }
+        }
     }
 
     private fun collapseLayoutBehaviours():AppBarLayout.OnOffsetChangedListener{
-        fun playButtonGoesDown(){
-            fab.visibility=View.VISIBLE
-            AdditiveAnimator.animate(fab).setDuration(1000)
-                    .y(point.heightPixels.toFloat()-120.fromDpiToPixelsBasedOnScreenSize())
-                    .alpha(1.0f)
-                    .start()
-            //fab.visibility=View.VISIBLE
 
-        }
-        fun playButtongoesUp(){
-            AdditiveAnimator.animate(fab).setDuration(1000)
-                    .y(fabInitialPosition[1].toFloat()-26.fromDpiToPixelsBasedOnScreenSize())
-                    .alpha(0.0f)
-                    .start()
-            //fab.visibility=View.GONE
-
-        }
         fun backArrowFadeIn(){
             Do after 100 milliseconds {
                 val t = Fade(Fade.MODE_IN)
@@ -160,52 +176,6 @@ class DetailRoot : AppCompatActivity() {
                 t.duration=700
                 TransitionManager.beginDelayedTransition(coordinator,t)
                 backArrow.visibility= View.INVISIBLE
-            }
-        }
-        fun shareSlideIn(){
-
-                // Prepare the View for the animation
-                fabShare.visibility=View.VISIBLE
-                fabShare.alpha=0.0f
-
-                // Start the animation
-                fabShare.animate()
-                        .translationY(point.heightPixels/10*7f)
-                        .alpha(1.0f)
-                        .setListener(null).duration=1000
-        }
-        fun shareSlideOut(){
-
-                // Start the animation
-                fabShare.animate()
-                        .translationY(-point.heightPixels/10*7f)
-                        .alpha(0.0f)
-                        .setListener(null).duration = 500
-        }
-        fun youtubeButtonSlideIn(){
-            Do after 300 milliseconds {
-                // Prepare the View for the animation
-                fabYoutube.visibility = View.VISIBLE
-                fabYoutube.alpha = 0.0f
-
-                // Start the animation
-                fabYoutube.animate()
-                        .translationY((point.heightPixels / 10f * 6))
-                        .alpha(1.0f)
-                        .setListener(null).duration = 1000
-            }
-        }
-        fun youtubeButtonSlideOut(){
-            Do after 100 milliseconds {
-
-                // Prepare the View for the animation
-                fabYoutube.visibility=View.GONE
-
-                // Start the animation
-                fabYoutube.animate()
-                        .translationY((-point.heightPixels/10f*6))
-                        .alpha(0.0f)
-                        .setListener(null).duration=500
             }
         }
         fun searchBarFadeIn(){
@@ -249,6 +219,28 @@ class DetailRoot : AppCompatActivity() {
             TransitionManager.beginDelayedTransition(coordinator,t)
             playButtonCenter.visibility=View.VISIBLE
         }
+        fun fabGroupAnimateIn(){
+            Do after 200 milliseconds {
+                val t = Fade(Fade.MODE_IN)
+                t.duration=1600
+                TransitionManager.beginDelayedTransition(coordinator,t)
+                fabGroup.visibility=View.VISIBLE
+                fab.visibility=View.VISIBLE
+                fabYoutube.visibility=View.VISIBLE
+                fabShare.visibility=View.VISIBLE
+            }
+
+        }
+        fun fabGroupAnimateOut(){
+            Do after 200 milliseconds {
+                val t = Fade(Fade.MODE_OUT)
+                TransitionManager.beginDelayedTransition(coordinator,t)
+                fabGroup.visibility=View.GONE
+                fab.visibility=View.GONE
+                fabYoutube.visibility=View.GONE
+                fabShare.visibility=View.GONE
+            }
+        }
 
 
 
@@ -261,12 +253,10 @@ class DetailRoot : AppCompatActivity() {
                         collapsedModeShouldBePlayed=true
                         "collapsed" log "COLLAPSEBAR"
                         backArrowFadeIn()
-                        youtubeButtonSlideIn()
-                        shareSlideIn()
-                        playButtonGoesDown()
                         searchBarFadeOut()
                         reverseGradientFadeOut()
                         hidePlayButtonCenter()
+                        fabGroupAnimateIn()
                     }
                 }
                 verticalOffset == 0 -> {
@@ -274,13 +264,10 @@ class DetailRoot : AppCompatActivity() {
                         expandedModeShouldBePlayed=true
                         collapsedModeShouldBePlayed=false
                         backArrowFadeOut()
-                        youtubeButtonSlideOut()
-                        shareSlideOut()
-                        playButtongoesUp()
                         reverseGradientFadeIn()
                         showPlayButtonCenter()
                         searchBarFadeIn()
-
+                        fabGroupAnimateOut()
                     }
                 }
                 else -> {
@@ -292,10 +279,10 @@ class DetailRoot : AppCompatActivity() {
 
     private fun setToolbarFont(){
         collapsingToolbarLayout
-        .setCollapsedTitleTypeface(Typeface.createFromAsset(this.assets, "merriweather_regular.ttf"))
+        .setCollapsedTitleTypeface(Typeface.createFromAsset(this.assets, "raleway_medium.ttf"))
 
         collapsingToolbarLayout
-        .setExpandedTitleTypeface(Typeface.createFromAsset(this.assets, "merriweather_regular.ttf"))
+        .setExpandedTitleTypeface(Typeface.createFromAsset(this.assets, "raleway_medium.ttf"))
     }
 
     private fun playImageOverLayEffect(){

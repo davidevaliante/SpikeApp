@@ -5,12 +5,14 @@ import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.view.WindowManager
 import android.os.Build
+import android.support.v4.content.ContextCompat
 
 fun View.onClick(func:()->Unit){
     this.setOnClickListener { func() }
@@ -41,4 +43,8 @@ fun Activity.hideKeyboard() {
 fun Context.hideKeyboard(view: View) {
     val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
     inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+}
+
+fun Context.getSupportDrawable(id : Int):Drawable?{
+    return ContextCompat.getDrawable(this,id)
 }

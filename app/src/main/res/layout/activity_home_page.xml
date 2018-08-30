@@ -1,27 +1,199 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
+    android:id="@+id/homeCoordinatot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".homepage.HomePage">
+    android:background="@color/transparent"
+    android:fitsSystemWindows="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    tools:context=".detailtwo.DetailRoot">
 
-    <Button
-        android:id="@+id/layout_light"
-        android:layout_marginBottom="16dp"
-        android:background="@color/colorPrimary"
-        android:text="Layout light"
-        android:textColor="@color/white"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <Button
-        android:id="@+id/layout_dark"
-        android:layout_marginBottom="16dp"
-        android:background="@color/colorPrimary"
-        android:text="Layout dark"
-        android:textColor="@color/white"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
 
-</LinearLayout>
+
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/homeAppar"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:background="@color/transparent"
+        android:fitsSystemWindows="true"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:elevation="0dp">
+
+
+        <net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout
+            android:id="@+id/homeCollapsing"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            app:collapsedTitleGravity="center"
+            app:collapsedTitleTextAppearance="@style/homecollapsedappbar"
+            app:contentScrim="@color/redPrimary"
+            app:scrimVisibleHeightTrigger="200dp"
+            app:expandedTitleGravity="start|bottom"
+            app:expandedTitleMarginBottom="16dp"
+            app:expandedTitleTextAppearance="@style/homeexpandedappbar"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:maxLines="4">
+
+            <ImageView
+                android:id="@+id/slidingImageView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/black"
+                android:scaleType="centerCrop" />
+
+
+
+            <ImageView
+                android:background="@color/shaded_black_alpha_90"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:textColor="@color/redPrimary"
+                    android:text="SPIKE SLOT"
+                    android:textSize="50sp"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:text="Trasforma il gioco in guadagno"
+                    android:gravity="center"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_gravity="bottom"
+                android:layout_marginTop="32dp"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:layout_gravity="center"
+                    android:id="@+id/aams_logo"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp" />
+
+                <TextView
+                    android:padding="16dp"
+                    android:textColor="@color/white"
+                    android:text="Il gioco è vietato ai minori e può causare dipendenza patologica.\nVerifica la probabilità di vincita su
+www.aams.gov.it\nGioca responsabilmente"
+                    android:textSize="9sp"
+                    android:fontFamily="@font/raleway_regular"
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+
+
+
+            <android.support.v7.widget.Toolbar
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/homeToolbar"
+                style="@style/ToolBarStyle.Event"
+                fontPath="font/montserrat_bold.ttf"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                app:layout_collapseMode="pin"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                app:titleTextAppearance="@style/ToolbarTitleTextAppearance"
+                app:titleTextColor="@color/white">
+
+                <TextView
+                    android:id="@+id/toolbarAppName"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/font_grezzo"
+                    android:padding="16dp"
+                    android:text="Spike Slot"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="22sp"
+                    android:visibility="gone" />
+            </android.support.v7.widget.Toolbar>
+
+        </net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
+
+    <RelativeLayout
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="4dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <android.support.v7.widget.CardView
+            android:visibility="visible"
+            android:layout_marginEnd="16dp"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:id="@+id/searchFieldGroup"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="@color/transparent"
+            app:cardCornerRadius="4dp"
+            android:layout_width="match_parent"
+            android:layout_marginStart="16dp"
+            android:layout_height="56dp">
+
+            <EditText
+                android:drawableRight="@drawable/ic_search"
+                android:drawablePadding="16dp"
+                android:id="@+id/searchFieldEditTextHome"
+                android:background="@color/transparent"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:layout_width="match_parent"
+                android:textColor="@color/white"
+                android:layout_height="match_parent"
+                android:layout_weight="0.8" >
+
+            </EditText>
+            <View
+                android:id="@+id/searchFieldBottomLine"
+                android:layout_gravity="bottom"
+                android:background="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"/>
+        </android.support.v7.widget.CardView>
+    </RelativeLayout>
+
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewPager"
+        android:fillViewport="true"
+        android:fitsSystemWindows="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusableInTouchMode="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@color/redPrimary"
+        app:tabGravity="fill"
+        app:tabTextAppearance="@style/TabTextAppearance"
+        app:tabIndicatorColor="@color/colorPrimaryDark"
+        app:tabSelectedTextColor="@color/white"
+        app:tabTextColor="@color/white" />
+
+
+
+</android.support.design.widget.CoordinatorLayout>

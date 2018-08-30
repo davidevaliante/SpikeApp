@@ -6,6 +6,7 @@ import aqua.extensions.Do
 import aqua.extensions.goTo
 import aqua.extensions.onClick
 import com.musashi.claymore.spike.spike.R
+import com.musashi.claymore.spike.spike.R.id.timeIndicator
 import com.musashi.claymore.spike.spike.homepage.HomePage
 import kotlinx.android.synthetic.main.activity_splash_screen.*
 
@@ -17,8 +18,9 @@ class SplashScreen : AppCompatActivity() {
 
         timeIndicator.show()
 
-        Do after 8 seconds  {
+        Do after 1000 milliseconds  {
             goTo<HomePage>()
+            finish()
         }
 
     }
