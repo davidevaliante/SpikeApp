@@ -120,18 +120,34 @@
         android:animateLayoutChanges="true"
         android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-        <TextView
-            android:id="@+id/disclaimer"
-            android:layout_height="wrap_content"
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:fontFamily="@font/montserrat_italic"
-            android:paddingBottom="8dp"
-            android:paddingTop="0dp"
-            android:text="Il gioco è vietato ai minori e può causare dipendenza patologica. Verifica la probabilità di vincita su www.aams.gov.it Gioca responsabilmente"
-            android:textSize="10sp" />
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/detail_aams_logo"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_gravity="center_vertical"
+                android:paddingStart="16dp" />
+
+            <TextView
+                android:id="@+id/disclaimer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_italic"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"
+                android:paddingBottom="0dp"
+                android:paddingEnd="16dp"
+                android:paddingStart="16dp"
+                android:paddingTop="0dp"
+                android:text="@string/disclaimerText"
+                android:textSize="10sp" />
+
+        </LinearLayout>
+
         <View
             android:id="@+id/reverse_gradient"
             android:visibility="gone"
@@ -140,35 +156,62 @@
             android:layout_height="2dp"/>
         <LinearLayout
             android:animateLayoutChanges="true"
-            android:orientation="horizontal"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <RelativeLayout
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                android:padding="8dp"
+                android:id="@+id/fabGroup"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/fab"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentEnd="true"
+                    android:visibility="visible"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="16dp"
+                    app:backgroundTint="@color/darkRed"
+                    app:fabSize="normal"
+                    app:srcCompat="@drawable/ic_play_button"/>
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/fabShare"
+                    android:layout_toLeftOf="@id/fab"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="16dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    app:backgroundTint="@color/white"
+                    app:fabSize="mini"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/ic_share"/>
 
-            <LinearLayout
-                android:animateLayoutChanges="true"
-                android:id="@+id/leftSideBar"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.20"
-                android:background="@color/white"
-                android:orientation="vertical">
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:background="@color/lightGray" />
-
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/fabYoutube"
+                    android:layout_toLeftOf="@id/fabShare"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="16dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    app:backgroundTint="@color/white"
+                    app:fabSize="mini"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/ic_youtube_logo"/>
+            </RelativeLayout>
+            <!-- CONTENT -->
             <include layout="@layout/detail_scrollview"></include>
 
 
         </LinearLayout>
-
-
-
 
     </LinearLayout>
 
@@ -179,17 +222,7 @@
         android:layout_marginEnd="4dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab"
-            android:visibility="gone"
-            android:layout_marginTop="-26dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="8dp"
-            app:backgroundTint="@color/darkRed"
-            app:fabSize="normal"
-            app:srcCompat="@drawable/ic_play_button"/>
+
 
         <android.support.v7.widget.CardView
             android:visibility="gone"
@@ -200,7 +233,6 @@
             app:cardElevation="0dp"
             app:cardBackgroundColor="@color/transparent"
             app:cardCornerRadius="4dp"
-            android:layout_alignBottom="@id/fab"
             android:layout_width="match_parent"
             android:layout_marginStart="16dp"
             android:layout_height="56dp">
@@ -224,33 +256,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="2dp"/>
         </android.support.v7.widget.CardView>
-
-
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fabShare"
-            android:layout_marginTop="-26dp"
-            android:layout_marginStart="16dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            app:backgroundTint="@color/white"
-            app:fabSize="mini"
-            android:visibility="gone"
-            app:srcCompat="@drawable/ic_share"/>
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fabYoutube"
-            android:layout_marginTop="-26dp"
-            android:layout_marginStart="16dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            app:backgroundTint="@color/white"
-            app:fabSize="mini"
-            android:visibility="gone"
-            app:srcCompat="@drawable/ic_youtube_logo"/>
-
     </RelativeLayout>
 
 

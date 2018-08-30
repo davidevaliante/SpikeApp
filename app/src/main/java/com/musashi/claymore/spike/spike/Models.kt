@@ -21,3 +21,5 @@ data class DetailedDescription(
         var playTips: String?=null,
         var relatedWebSites: String?=null)
 
+data class Bonus(var title : String?=null, var desc : String?=null, var link : String?=null)
+
