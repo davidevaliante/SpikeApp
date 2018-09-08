@@ -1,5 +1,5 @@
 package com.musashi.claymore.spike.spike
 
 interface SlotDetailDisplayer{
-    fun assignDataToDisplay(data:DetailedDescription)
+    fun assignDataToDisplay(data:Slot)
 }

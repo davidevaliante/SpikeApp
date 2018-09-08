@@ -1,28 +1,21 @@
 package com.musashi.claymore.spike.spike.homepage
 
 import android.app.Activity
-import android.content.Context
-import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import aqua.extensions.goTo
 import aqua.extensions.showInfo
 import com.bumptech.glide.Glide
 import com.musashi.claymore.spike.spike.Bonus
-import com.musashi.claymore.spike.spike.DetailedDescription
 
 import com.musashi.claymore.spike.spike.R
-import com.musashi.claymore.spike.spike.detailtwo.DetailRoot
 import kotlinx.android.synthetic.main.bonus_card.view.*
 import kotlinx.android.synthetic.main.fragment_second.*
-import kotlinx.android.synthetic.main.slot_card.view.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -71,8 +64,8 @@ class SecondFragment : Fragment() {
 
         inner class BonusViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             fun bindView(data: Bonus) {
-                itemView.bonusTitle.text = data.title
-                itemView.bonusDescription.text = data.desc
+//                itemView.bonusTitle.text = data.title
+//                itemView.bonusDescription.text = data.desc
                 Glide.with(activity).load("http://www.playbit.it/wp-content/uploads/2018/04/888casino-696x398.jpg")
                         .into(itemView.bonusImage)
                 itemView.bonusImage

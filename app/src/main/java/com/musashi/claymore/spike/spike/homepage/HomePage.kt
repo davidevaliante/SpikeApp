@@ -2,10 +2,8 @@ package com.musashi.claymore.spike.spike.homepage
 
 
 import android.app.Activity
-import android.graphics.Movie
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
 import android.support.design.widget.AppBarLayout
 import android.support.transition.Fade
 import android.support.transition.TransitionManager
@@ -13,26 +11,17 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
 import android.support.v4.view.animation.FastOutSlowInInterpolator
-import android.support.v7.widget.AppCompatTextView
-import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.view.Display
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import aqua.extensions.goTo
-import aqua.extensions.log
-import aqua.extensions.showInfo
-import aqua.extensions.showMessage
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.musashi.claymore.spike.spike.DetailedDescription
+import com.musashi.claymore.spike.spike.Slot
 import com.musashi.claymore.spike.spike.R
-import com.musashi.claymore.spike.spike.R.id.*
 import com.musashi.claymore.spike.spike.detailtwo.DetailRoot
-import kotlinx.android.synthetic.main.activity_detail_root.*
 import kotlinx.android.synthetic.main.activity_home_page.*
-import kotlinx.android.synthetic.main.activity_home_page.view.*
 import kotlinx.android.synthetic.main.slot_card.view.*
 import java.util.*
 
@@ -45,27 +34,9 @@ class HomePage : AppCompatActivity() {
         Glide.with(this).load("https://firebasestorage.googleapis.com/v0/b/spike-2481d.appspot.com/o/Mix%2Fslot-header-img-min-min.jpg?alt=media&token=6648de0a-3cd6-402f-9ada-a961cf893c2a")
                 .into(slidingImageView)
 
-        // logo aams
-        // Glide.with(this).load("https://seeklogo.com/images/A/AAMS_Timone_Gioco_Sicuro-logo-8525C3341F-seeklogo.com.png").into(aams_logo)
-// IMAGE SLIDER
-//        // loop ogni 4000 millisecondi
-//        val handler = Handler()
-//        val imageSlider = object : Runnable {
-//            override fun run() {
-//                // caricamento immagine casuale
-//                loadRandomImage()
-//                handler.postDelayed(this, 4000)
-//            }
-//        }
-//        imageSlider.run()
-
         homeAppar.addOnOffsetChangedListener(collapseLayoutBehaviours())
-
         viewPager.adapter=TabsAdapter(supportFragmentManager, listOf(FirstFragment(),SecondFragment()))
         tabs.setupWithViewPager(viewPager)
-
-
-
     }
 
 
@@ -88,7 +59,7 @@ class HomePage : AppCompatActivity() {
         }
     }
 
-    class SlotAdapter(var slotList: List<DetailedDescription>, val activity: Activity) : RecyclerView.Adapter<SlotAdapter.SlotViewholder>() {
+    class SlotAdapter(var slotList: List<Slot>, val activity: Activity) : RecyclerView.Adapter<SlotAdapter.SlotViewholder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SlotViewholder {
             val view = LayoutInflater.from(parent.context).inflate(R.layout.slot_card, parent, false)
             return SlotViewholder(view)
@@ -101,15 +72,14 @@ class HomePage : AppCompatActivity() {
             holder.bindView(slotList[position])
         }
 
-        fun updateList(newList: List<DetailedDescription>) {
+        fun updateList(newList: List<Slot>) {
             this.slotList = newList
             notifyDataSetChanged()
         }
 
-
         inner class SlotViewholder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            fun bindView(data: DetailedDescription) {
-                itemView.cardSlotTitle.text = data.fullName
+            fun bindView(data: Slot) {
+                itemView.cardSlotTitle.text = data.name
                 itemView.setOnClickListener {
                     (activity as AppCompatActivity).goTo<DetailRoot>()
                 }
@@ -150,7 +120,6 @@ class HomePage : AppCompatActivity() {
             }
         }
     }
-
 
     fun loadRandomImage() {
 
