@@ -2,7 +2,6 @@ package com.musashi.claymore.spike.spike.detail
 
 
 import android.content.pm.ActivityInfo
-import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
 import android.support.transition.*
 import android.support.v4.app.Fragment
@@ -13,25 +12,20 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.TextView
 import aqua.extensions.*
 import com.bumptech.glide.Glide
-import com.musashi.claymore.spike.spike.DetailedDescription
+import com.musashi.claymore.spike.spike.Slot
 import com.musashi.claymore.spike.spike.R
-import com.musashi.claymore.spike.spike.R.id.mainDescription
 import com.musashi.claymore.spike.spike.SlotDetailDisplayer
 import com.musashi.claymore.spike.spike.constants.DetailStatus
-import kotlinx.android.synthetic.main.activity_detail.*
-import kotlinx.android.synthetic.main.fragment_description_detail.*
 import kotlinx.android.synthetic.main.fragment_description_detail.view.*
-import java.time.Duration
 
 
 class DescriptionDetailFragment : Fragment(),SlotDetailDisplayer {
 
     lateinit var rootLayout:ViewGroup
-    var data : DetailedDescription = DetailedDescription()
+    var data : Slot = Slot()
     var isTransitioning : Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -233,19 +227,19 @@ class DescriptionDetailFragment : Fragment(),SlotDetailDisplayer {
             this.collapseButtonTransition(collapseDuration)
     }
 
-    fun bindDetailDataToUI(data : DetailedDescription, vg:ViewGroup){
-        Glide.with(this).load(data.imageLink).into(vg.img)
-
-        vg.mainDescription.text = data.description
-        var tecnicalString=""
-        data.technicals?.split("@")?.forEach { tecnicalString += "- $it\n" }
-        vg.tecnical.text = tecnicalString
-        var tipsString = ""
-        data.playTips?.split("@")?.forEach { tipsString += "- $it\n" }
-        vg.tips.text = tipsString
+    fun bindDetailDataToUI(data : Slot, vg:ViewGroup){
+//        Glide.with(this).load(data.imageLink).into(vg.img)
+//
+//        vg.mainDescription.text = data.description
+//        var tecnicalString=""
+//        data.technicals?.split("@")?.forEach { tecnicalString += "- $it\n" }
+//        vg.tecnical.text = tecnicalString
+//        var tipsString = ""
+//        data.playTips?.split("@")?.forEach { tipsString += "- $it\n" }
+//        vg.tips.text = tipsString
     }
 
-    override fun assignDataToDisplay(data: DetailedDescription){
+    override fun assignDataToDisplay(data: Slot){
         this.data = data
     }
 

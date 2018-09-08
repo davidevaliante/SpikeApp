@@ -31,13 +31,21 @@ import android.widget.Toast
 import com.google.firebase.database.DatabaseReference
 import es.dmoral.toasty.Toasty
 
+fun String.toSnakeCase():String{
+    var f = ""
+    val re = Regex("[^A-Za-z0-9 ]")
+    val words = this.split(" ") as List
+    val cleanedWords = words.map { re.replace(it,"") }
+    cleanedWords.forEachIndexed{ index, x ->
+        f += if(index==0) "${x.toLowerCase()}" else "_${x.toLowerCase()}"
+    }
+    return f
+}
+
 inline fun <reified T : ViewModel> AppCompatActivity.assignViewModel() : T{
     return ViewModelProvider.AndroidViewModelFactory.getInstance(application).create(T::class.java)
 
 }
-
-
-
 
 fun String.fromHtml():Spanned{
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
