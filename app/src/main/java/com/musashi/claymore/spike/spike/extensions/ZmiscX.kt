@@ -31,11 +31,12 @@ import android.widget.Toast
 import com.google.firebase.database.DatabaseReference
 import es.dmoral.toasty.Toasty
 
+// per trasformare in snakeCase il nome di una slot
 fun String.toSnakeCase():String{
     var f = ""
     val re = Regex("[^A-Za-z0-9 ]")
-    val words = this.split(" ") as List
-    val cleanedWords = words.map { re.replace(it,"") }
+    val splitted = this.split("\\s+".toRegex())
+    val cleanedWords = splitted.map { re.replace(it.trim(),"") }
     cleanedWords.forEachIndexed{ index, x ->
         f += if(index==0) "${x.toLowerCase()}" else "_${x.toLowerCase()}"
     }
