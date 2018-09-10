@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import aqua.extensions.goTo
 import aqua.extensions.log
+import aqua.extensions.showInfo
 import com.bumptech.glide.Glide
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -30,12 +31,12 @@ import kotlinx.android.synthetic.main.slot_card.view.*
 
 
 class FirstFragment : Fragment() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
 
-
-    }
-
+    var loading = false
+    var slotList = mutableListOf<SlotCard>()
+    val slotNode = FirebaseDatabase.getInstance().reference.child("SlotsCard").child("it")
+    var chunkSize = 20
+    var chunkNumber = 1
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_first, container, false)
@@ -43,23 +44,49 @@ class FirstFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val slotNode = FirebaseDatabase.getInstance().reference.child("SlotsCard").child("it")
 
-        slotNode.limitToLast(20).addListenerForSingleValueEvent(object :ValueEventListener{
+        slotRc.layoutManager=GridLayoutManager(activity,2)
+        slotRc.adapter=SlotAdapter(slotList, activity as Activity)
+
+        slotRc.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                var visibleThreshold = 4
+                var totalItemCount = slotRc.layoutManager.itemCount
+                var lastVisibleItem = (slotRc.layoutManager as GridLayoutManager).findLastVisibleItemPosition()
+                if (!loading && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
+                    showInfo("${slotList.last().time}")
+                    if(slotList.last().time!=null)
+                    loadNextChunk((slotList.last().time as Long).toDouble())
+                }
+            }
+        })
+    }
+
+    override fun onStart() {
+        super.onStart()
+        loadNextChunk()
+    }
+
+    private fun loadNextChunk (time:Double=System.currentTimeMillis().toDouble()) {
+        loading=true
+        slotNode.orderByChild("time").endAt(time).limitToLast(chunkSize*chunkNumber)
+        .addListenerForSingleValueEvent(object :ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
-                val data = snapshot.children
-                val list = mutableListOf<SlotCard>()
-                snapshot.children.mapNotNullTo(list, {it.getValue<SlotCard>(SlotCard::class.java)})
-
-                slotRc.adapter=SlotAdapter(list, activity as Activity)
+                snapshot.children.reversed().map { it.getValue<SlotCard>(SlotCard::class.java)?.time }.toString() log "FETCHED_LIST"
+                snapshot.children.reversed().mapNotNullTo(slotList, {it.getValue<SlotCard>(SlotCard::class.java)})
+                chunkNumber++
+                loading=false
+                slotRc.adapter.notifyDataSetChanged()
             }
             override fun onCancelled(error: DatabaseError) {
                 error.toString() log "FB ERROR"
             }
         })
-        slotRc.layoutManager=GridLayoutManager(activity,2)
-        slotRc.adapter=SlotAdapter(emptyList(), activity as Activity)
     }
+}
+
+
 
     class SlotAdapter(var slotList: List<SlotCard>, val activity: Activity) : RecyclerView.Adapter<SlotAdapter.SlotViewholder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SlotViewholder {
@@ -92,4 +119,4 @@ class FirstFragment : Fragment() {
     }
 
 
-}
+
