@@ -32,6 +32,7 @@ import com.musashi.claymore.spike.spike.R
 import com.musashi.claymore.spike.spike.R.id.*
 import com.musashi.claymore.spike.spike.SlotCard
 import com.musashi.claymore.spike.spike.detailtwo.DetailRoot
+import kotlinx.android.synthetic.main.activity_detail_root.*
 import kotlinx.android.synthetic.main.activity_home_page.*
 import kotlinx.android.synthetic.main.search_card.view.*
 import kotlinx.android.synthetic.main.slot_card.view.*
@@ -40,30 +41,25 @@ import java.util.*
 class HomePage : AppCompatActivity() {
 
     var searchResults:MutableList<SlotCard> = mutableListOf()
+    private val customSearchListener by lazy {searchSlot()}
+    private val HEADER_IMG_URL = "https://firebasestorage.googleapis.com/v0/b/spike-2481d.appspot.com/o/Mix%2Fslot-header-img-min-min.jpg?alt=media&token=6648de0a-3cd6-402f-9ada-a961cf893c2a"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home_page)
-        Glide.with(this).load("https://firebasestorage.googleapis.com/v0/b/spike-2481d.appspot.com/o/Mix%2Fslot-header-img-min-min.jpg?alt=media&token=6648de0a-3cd6-402f-9ada-a961cf893c2a")
-                .into(slidingImageView)
 
+        // header
         homeAppar.addOnOffsetChangedListener(collapseLayoutBehaviours())
+        Glide.with(this).load(HEADER_IMG_URL).into(slidingImageView)
+
+        // tabs
         viewPager.adapter=TabsAdapter(supportFragmentManager, listOf(FirstFragment(),SecondFragment()))
         tabs.setupWithViewPager(viewPager)
+
+        // recyclerview
         searchRc.layoutManager=LinearLayoutManager(this)
         searchRc.adapter=SearchSlotAdapter(searchResults,this)
-        searchFieldEditTextHome.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                Do.after(200).milliseconds {
-                    if(s?.toString()?.length!! >=1) searchSlotByName(s?.toString())
-                    else {
-                        (searchRc.adapter as SearchSlotAdapter).updateList(emptyList())
-                    }
-                }
-            }
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-        })
+        searchFieldEditTextHome.addTextChangedListener(customSearchListener)
     }
 
     private fun searchSlotByName(s:String){
@@ -90,6 +86,22 @@ class HomePage : AppCompatActivity() {
         searchFieldEditTextHome.setText("")
         (searchRc.adapter as SearchSlotAdapter).updateList(searchResults)
     }
+
+    private fun searchSlot() : TextWatcher {
+        return object :TextWatcher{
+            override fun afterTextChanged(s: Editable?) {
+                Do.after(200).milliseconds {
+                    if(s?.toString()?.length!! >=1) searchSlotByName(s?.toString())
+                    else {
+                        (searchRc.adapter as HomePage.SearchSlotAdapter).updateList(emptyList())
+                    }
+                }
+            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        }
+    }
+
 
     class TabsAdapter(fragmentManager: FragmentManager, private val frags: List<Fragment>) :
             FragmentStatePagerAdapter(fragmentManager) {
