@@ -47,6 +47,7 @@ class DetailRoot : AppCompatActivity() {
     // per il controllo movimento Fab
     private var expandedModeShouldBePlayed = true
     private var collapsedModeShouldBePlayed = true
+    private var isSearchingSlot=false
     // per rimuovere/aggiungere il listner a seconda del lifecycle
     private val customOffsetChangedListener by lazy { collapseLayoutBehaviours() }
     private val customSearchListener by lazy {searchSlot()}
@@ -92,6 +93,8 @@ class DetailRoot : AppCompatActivity() {
     }
 
     private fun searchSlotByName(s:String){
+        isSearchingSlot=true
+        detailSearchIndicator.smoothToShow()
         val string = s.toUpperCase()
         FirebaseDatabase.getInstance().reference.child("SlotsCard").child("it")
         .orderByChild("name").startAt(string).endAt("$string\uf8ff")
@@ -104,6 +107,8 @@ class DetailRoot : AppCompatActivity() {
                     result
                 })
                 (detailSearchRc.adapter as HomePage.SearchSlotAdapter).updateList(searchResults)
+                detailSearchIndicator.smoothToHide()
+                isSearchingSlot=false
             }
             override fun onCancelled(error: DatabaseError) {
             }
@@ -227,6 +232,7 @@ class DetailRoot : AppCompatActivity() {
     private fun searchSlot() : TextWatcher {
         return object :TextWatcher{
             override fun afterTextChanged(s: Editable?) {
+                if(!isSearchingSlot)
                 Do.after(200).milliseconds {
                     if(s?.toString()?.length!! >=1) searchSlotByName(s?.toString())
                     else {

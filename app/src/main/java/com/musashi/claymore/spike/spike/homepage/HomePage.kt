@@ -19,6 +19,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import aqua.extensions.Do
+import aqua.extensions.getSupportDrawable
 import aqua.extensions.goTo
 import aqua.extensions.log
 import com.bumptech.glide.Glide
@@ -42,6 +43,7 @@ class HomePage : AppCompatActivity() {
 
     var searchResults:MutableList<SlotCard> = mutableListOf()
     private val customSearchListener by lazy {searchSlot()}
+    private var isSearchingSlot=false
     private val HEADER_IMG_URL = "https://firebasestorage.googleapis.com/v0/b/spike-2481d.appspot.com/o/Mix%2Fslot-header-img-min-min.jpg?alt=media&token=6648de0a-3cd6-402f-9ada-a961cf893c2a"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,7 +52,7 @@ class HomePage : AppCompatActivity() {
 
         // header
         homeAppar.addOnOffsetChangedListener(collapseLayoutBehaviours())
-        Glide.with(this).load(HEADER_IMG_URL).into(slidingImageView)
+        Glide.with(this).load(HEADER_IMG_URL).thumbnail(0.1f).into(slidingImageView)
 
         // tabs
         viewPager.adapter=TabsAdapter(supportFragmentManager, listOf(FirstFragment(),SecondFragment()))
@@ -63,6 +65,8 @@ class HomePage : AppCompatActivity() {
     }
 
     private fun searchSlotByName(s:String){
+        isSearchingSlot=true
+        homeSearchIndicator.smoothToShow()
         val string = s.toUpperCase()
         FirebaseDatabase.getInstance().reference.child("SlotsCard").child("it")
                 .orderByChild("name").startAt(string).endAt("$string\uf8ff")
@@ -75,6 +79,8 @@ class HomePage : AppCompatActivity() {
                             result
                         })
                         (searchRc.adapter as SearchSlotAdapter).updateList(searchResults)
+                        isSearchingSlot=false
+                        homeSearchIndicator.smoothToHide()
                     }
                     override fun onCancelled(error: DatabaseError) {
                     }
@@ -90,18 +96,19 @@ class HomePage : AppCompatActivity() {
     private fun searchSlot() : TextWatcher {
         return object :TextWatcher{
             override fun afterTextChanged(s: Editable?) {
-                Do.after(200).milliseconds {
-                    if(s?.toString()?.length!! >=1) searchSlotByName(s?.toString())
-                    else {
-                        (searchRc.adapter as HomePage.SearchSlotAdapter).updateList(emptyList())
+                // se non sta facendo già una richiesta
+                if(!isSearchingSlot)
+                    Do.after(100).milliseconds {
+                        if(s?.toString()?.length!! >=1) searchSlotByName(s?.toString())
+                        else {
+                            (searchRc.adapter as HomePage.SearchSlotAdapter).updateList(emptyList())
+                        }
                     }
-                }
             }
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         }
     }
-
 
     class TabsAdapter(fragmentManager: FragmentManager, private val frags: List<Fragment>) :
             FragmentStatePagerAdapter(fragmentManager) {
@@ -184,22 +191,5 @@ class HomePage : AppCompatActivity() {
         }
     }
 
-    fun loadRandomImage() {
 
-        val dilettaList = listOf(
-                "http://slotmachinesgratisonline.com/wp-content/themes/SlotMachines/scripts/timthumb.php?src=http://slotmachinesgratisonline.com/wp-content/uploads/2013/05/Fowl_play_gold_2-292x242.jpg&w=292&h=242",
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDWTXa9YR8BWwYdBg9jb-BXFndAq6jB4sJQDGuGBJDf3HQkBmtWQ",
-                "https://images.images4us.com/888Casino_It/It/slots_teaser-1479629038684.jpg",
-                "http://www.slotmachinesitalia.it/wp-content/uploads/2018/06/come-si-gioca-slot-machine.jpg",
-                "https://it.slotsup.com/wp-content/uploads/default/joker-pro-netent-slot-machine.png")
-
-        val random = Random().nextInt(dilettaList.size - 1)
-        val randomlyPickedImage = dilettaList[random]
-        if (!this.isFinishing || !this.isDestroyed)
-            Glide.with(this).load(randomlyPickedImage)
-                    .transition(DrawableTransitionOptions.withCrossFade())
-                    .into(slidingImageView)
-
-
-    }
 }
