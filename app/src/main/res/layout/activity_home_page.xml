@@ -11,9 +11,6 @@
     android:focusableInTouchMode="true"
     tools:context=".detailtwo.DetailRoot">
 
-
-
-
     <android.support.design.widget.AppBarLayout
         android:id="@+id/homeAppar"
         android:layout_width="match_parent"
@@ -21,6 +18,7 @@
         android:background="@color/transparent"
         android:fitsSystemWindows="true"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:layout_behavior="com.musashi.claymore.spike.spike.extensions.FixAppBarLayoutBehavior"
         app:elevation="0dp">
 
 
@@ -131,8 +129,6 @@ www.aams.gov.it\nGioca responsabilmente"
     </android.support.design.widget.AppBarLayout>
 
     <RelativeLayout
-        android:focusable="true"
-        android:focusableInTouchMode="true"
         android:layout_marginTop="0dp"
         android:layout_marginEnd="4dp"
         android:layout_width="match_parent"

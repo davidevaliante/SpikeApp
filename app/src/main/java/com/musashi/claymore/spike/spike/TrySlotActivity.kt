@@ -13,10 +13,11 @@ class TrySlotActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_try_slot)
         requestedOrientation= ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-        addFragment(slotContainer,TrySlotFragment())
+        addFragment(slotContainer,TrySlotFragment.newInstance(intent.extras.getString("PLAY_LINK")))
     }
 
     override fun onBackPressed() {
         super.onBackPressed()
     }
+
 }
