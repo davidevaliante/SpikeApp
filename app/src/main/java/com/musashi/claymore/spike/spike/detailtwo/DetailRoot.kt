@@ -32,6 +32,7 @@ import android.net.Uri
 import android.support.v7.widget.LinearLayoutManager
 import android.text.Editable
 import android.text.TextWatcher
+import com.musashi.claymore.spike.spike.R.id.*
 import com.musashi.claymore.spike.spike.SlotCard
 import com.musashi.claymore.spike.spike.homepage.HomePage
 import kotlinx.android.synthetic.main.activity_home_page.*
@@ -48,6 +49,7 @@ class DetailRoot : AppCompatActivity() {
     private var collapsedModeShouldBePlayed = true
     // per rimuovere/aggiungere il listner a seconda del lifecycle
     private val customOffsetChangedListener by lazy { collapseLayoutBehaviours() }
+    private val customSearchListener by lazy {searchSlot()}
     private val AAMS_LOGO_URL = "https://seeklogo.com/images/A/AAMS_Timone_Gioco_Sicuro-logo-8525C3341F-seeklogo.com.png"
     private val screenDensity by lazy { resources.displayMetrics.density }
     var searchResults:MutableList<SlotCard> = mutableListOf()
@@ -56,26 +58,21 @@ class DetailRoot : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         makeStatusbarTranslucent()
         setContentView(R.layout.activity_detail_root)
+
+        // dati di base
         val id = intent.extras.getString("SLOT_ID")
         getSlotWithId(id)
+
+        // layout + animazioni
         layoutSetup()
         setAllOnClickListners()
         playImageOverLayEffect()
         appBarLayout.addOnOffsetChangedListener(customOffsetChangedListener)
+
+        // search
         detailSearchRc.layoutManager= LinearLayoutManager(this)
         detailSearchRc.adapter= HomePage.SearchSlotAdapter(searchResults, this)
-        searchFieldEditText.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                Do.after(200).milliseconds {
-                    if(s?.toString()?.length!! >=1) searchSlotByName(s?.toString())
-                    else {
-                        (detailSearchRc.adapter as HomePage.SearchSlotAdapter).updateList(emptyList())
-                    }
-                }
-            }
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-        })
+        searchFieldEditText.addTextChangedListener(customSearchListener)
     }
 
     override fun onStop() {
@@ -97,20 +94,20 @@ class DetailRoot : AppCompatActivity() {
     private fun searchSlotByName(s:String){
         val string = s.toUpperCase()
         FirebaseDatabase.getInstance().reference.child("SlotsCard").child("it")
-                .orderByChild("name").startAt(string).endAt("$string\uf8ff")
-                .addListenerForSingleValueEvent(object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        searchResults.removeAll { it!=null }
-                        snapshot.children.mapNotNullTo(searchResults, {
-                            val result = it.getValue<SlotCard>(SlotCard::class.java)
-                            result?.id=it.key
-                            result
-                        })
-                        (detailSearchRc.adapter as HomePage.SearchSlotAdapter).updateList(searchResults)
-                    }
-                    override fun onCancelled(error: DatabaseError) {
-                    }
+        .orderByChild("name").startAt(string).endAt("$string\uf8ff")
+        .addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                searchResults.removeAll { it!=null }
+                snapshot.children.mapNotNullTo(searchResults, {
+                    val result = it.getValue<SlotCard>(SlotCard::class.java)
+                    result?.id=it.key
+                    result
                 })
+                (detailSearchRc.adapter as HomePage.SearchSlotAdapter).updateList(searchResults)
+            }
+            override fun onCancelled(error: DatabaseError) {
+            }
+        })
     }
 
     private fun getSlotWithId(id:String?){
@@ -224,6 +221,21 @@ class DetailRoot : AppCompatActivity() {
                 tipsCardGroup.visibility = View.GONE
                 tipsHeader.setCompoundDrawablesWithIntrinsicBounds(null,null, getSupportDrawable(R.drawable.ic_down_arrow_red) ,null)
             }
+        }
+    }
+
+    private fun searchSlot() : TextWatcher {
+        return object :TextWatcher{
+            override fun afterTextChanged(s: Editable?) {
+                Do.after(200).milliseconds {
+                    if(s?.toString()?.length!! >=1) searchSlotByName(s?.toString())
+                    else {
+                        (detailSearchRc.adapter as HomePage.SearchSlotAdapter).updateList(emptyList())
+                    }
+                }
+            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         }
     }
 

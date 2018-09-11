@@ -61,16 +61,12 @@ class FirstFragment : Fragment() {
                 }
             }
         })
-
-
     }
 
     override fun onStart() {
         super.onStart()
         loadNextChunk()
     }
-
-
 
     private fun loadNextChunk (time:Double=System.currentTimeMillis().toDouble()) {
         loading=true

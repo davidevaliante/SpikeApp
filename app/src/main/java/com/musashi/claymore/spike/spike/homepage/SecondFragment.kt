@@ -31,16 +31,7 @@ class SecondFragment : Fragment() {
     var bonusList:MutableList<Bonus> = mutableListOf()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        FirebaseDatabase.getInstance().reference.child("Bonus").child("it")
-        .addListenerForSingleValueEvent(object :ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-                snapshot.children.mapNotNullTo(bonusList, {it.getValue<Bonus>(Bonus::class.java)})
-                (bonusRc.adapter as BonusAdapter).updateList(bonusList)
-                bonusList.toString() log "LIST"
-            }
-            override fun onCancelled(error: DatabaseError) {
-            }
-        })
+        getBonusList()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -54,6 +45,22 @@ class SecondFragment : Fragment() {
 
         bonusRc.layoutManager = LinearLayoutManager(activity)
         bonusRc.adapter = BonusAdapter(bonusList,activity as FragmentActivity)
+    }
+
+    private fun getBonusList(){
+        FirebaseDatabase.getInstance().reference.child("Bonus").child("it")
+                .addListenerForSingleValueEvent(object :ValueEventListener{
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        bindData(snapshot.children)
+                    }
+                    override fun onCancelled(error: DatabaseError) {
+                    }
+                })
+    }
+
+    private fun bindData(fetchedList:Iterable<DataSnapshot>){
+        fetchedList.mapNotNullTo(bonusList, {it.getValue<Bonus>(Bonus::class.java)})
+        (bonusRc.adapter as BonusAdapter).updateList(bonusList)
     }
 
     class BonusAdapter(var bonusList: MutableList<Bonus>, val activity: Activity) : RecyclerView.Adapter<SecondFragment.BonusAdapter.BonusViewHolder>() {
