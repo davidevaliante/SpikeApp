@@ -97,13 +97,13 @@ class HomePage : AppCompatActivity() {
         return object :TextWatcher{
             override fun afterTextChanged(s: Editable?) {
                 // se non sta facendo già una richiesta
-                if(!isSearchingSlot)
-                    Do.after(100).milliseconds {
+                Do.after(300).milliseconds {
+                    if(!isSearchingSlot)
                         if(s?.toString()?.length!! >=1) searchSlotByName(s?.toString())
                         else {
                             (searchRc.adapter as HomePage.SearchSlotAdapter).updateList(emptyList())
                         }
-                    }
+                }
             }
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}

@@ -232,12 +232,13 @@ class DetailRoot : AppCompatActivity() {
     private fun searchSlot() : TextWatcher {
         return object :TextWatcher{
             override fun afterTextChanged(s: Editable?) {
-                if(!isSearchingSlot)
-                Do.after(200).milliseconds {
-                    if(s?.toString()?.length!! >=1) searchSlotByName(s?.toString())
-                    else {
-                        (detailSearchRc.adapter as HomePage.SearchSlotAdapter).updateList(emptyList())
-                    }
+
+                Do.after(300).milliseconds {
+                    if(!isSearchingSlot)
+                        if(s?.toString()?.length!! >=1) searchSlotByName(s?.toString())
+                        else {
+                            (detailSearchRc.adapter as HomePage.SearchSlotAdapter).updateList(emptyList())
+                        }
                 }
             }
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
