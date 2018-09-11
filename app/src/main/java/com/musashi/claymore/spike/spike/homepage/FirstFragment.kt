@@ -56,7 +56,6 @@ class FirstFragment : Fragment() {
                 var totalItemCount = slotRc.layoutManager.itemCount
                 var lastVisibleItem = (slotRc.layoutManager as GridLayoutManager).findLastVisibleItemPosition()
                 if (!loading && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
-                    showInfo("${slotList.last().time}")
                     if(slotList.last().time!=null)
                     loadNextChunk((slotList.last().time as Long).toDouble())
                 }
