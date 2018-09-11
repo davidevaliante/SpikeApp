@@ -19,7 +19,7 @@ data class Slot(
         var producer: Producer?=null,
         var rating: String?=null,
         var tecnicals: String?=null,
-        var time: Long?=null,
+        var time: Double?=null,
         var tips: String?=null,
         var type: String?=null
 )
@@ -30,7 +30,7 @@ data class SlotCard(
         var name: String?=null,
         var producer: String?=null,
         var rating: String?=null,
-        var time: Long?=null,
+        var time: Double?=null,
         var type: String?=null
 )
 
