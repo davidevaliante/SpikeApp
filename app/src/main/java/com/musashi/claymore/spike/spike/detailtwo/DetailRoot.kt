@@ -19,8 +19,15 @@ import com.bumptech.glide.Glide
 import com.musashi.claymore.spike.spike.Slot
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper
 import aqua.extensions.*
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.musashi.claymore.spike.spike.TrySlotActivity
+import com.musashi.claymore.spike.spike.constants.ImgSize
+import com.musashi.claymore.spike.spike.getImageLinkFromName
 import fromHtml
+import io.reactivex.internal.util.NotificationLite.getValue
 import kotlinx.android.synthetic.main.tip_card.view.*
 
 
@@ -30,81 +37,30 @@ class DetailRoot : AppCompatActivity() {
     // container posizione iniziale Floating action button
     private var fabInitialPosition = IntArray(2)
     private val point : DisplayMetrics by lazy { DisplayMetrics() }
-
     // per il controllo movimento Fab
     private var expandedModeShouldBePlayed = true
     private var collapsedModeShouldBePlayed = true
     // per rimuovere/aggiungere il listner a seconda del lifecycle
     private val customOffsetChangedListener by lazy { collapseLayoutBehaviours() }
-
+    private val AAMS_LOGO_URL = "https://seeklogo.com/images/A/AAMS_Timone_Gioco_Sicuro-logo-8525C3341F-seeklogo.com.png"
     private val screenDensity by lazy { resources.displayMetrics.density }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         makeStatusbarTranslucent()
         setContentView(R.layout.activity_detail_root)
-
-        bindDataToUI()
+        val id = intent.extras.getString("SLOT_ID")
+        getSlotWithId(id)
         layoutSetup()
         setAllOnClickListners()
-
-        playImageOverLayEffect()
-
-        appBarLayout.addOnOffsetChangedListener(customOffsetChangedListener)
-
-    }
-
-    override fun onDestroy() {
-        appBarLayout.removeOnOffsetChangedListener(customOffsetChangedListener)
-        super.onDestroy()
-    }
-
-    override fun onResume() {
-        requestedOrientation= ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        super.onResume()
-    }
-
-    private fun bindDataToUI(){
-        fun addViewsToTipsLayout(){
-//            val tipsList = descrizioneEsempio.playTips?.split("@")
-//            tipsList?.forEach {
-//                val cardToAdd = LayoutInflater.from(this).inflate(R.layout.tip_card, tipsCardGroup, false)
-//                cardToAdd.tipsText.text = it.fromHtml()
-//
-//                tipsCardGroup.addView(cardToAdd)
-//            }
-        }
-
-        // caricamento dati dalla classe finta
-//        Glide.with(this).load(descrizioneEsempio.imageLink).into(collapsingImg)
-//        Glide.with(this).load("https://seeklogo.com/images/A/AAMS_Timone_Gioco_Sicuro-logo-8525C3341F-seeklogo.com.png")
-//                .into(detail_aams_logo)
-//        descriptionText.text = descrizioneEsempio.description?.fromHtml()
-//        tecnicalsText.text = buildTecnicalString()
-//        addViewsToTipsLayout()
-//        footerText.text= footer.fromHtml()
-//        myToolbar.title="Pyramid: Quest for immortality"
-    }
-
-    private fun layoutSetup(){
-        windowManager.defaultDisplay.getMetrics(point)
-        // funzioni per settare il layout in modo giusto per API < 21
-        complexScrollView.verticalScrollbarPosition = View.SCROLLBAR_POSITION_LEFT
-        setSupportActionBar(myToolbar)
-        setToolbarFont()
-        fab.getLocationOnScreen(fabInitialPosition)
-    }
-
-    private fun setAllOnClickListners(){
         fabShare.setOnClickListener { showInfo("share pagina su whatsapp/telegram/Facebook") }
         fabYoutube.setOnClickListener { showInfo("va alla pagina con il video di youtube correlato") }
-        fab.setOnClickListener { goTo<TrySlotActivity>() }
         backArrow.setOnClickListener {
             appBarLayout.removeOnOffsetChangedListener(customOffsetChangedListener)
             finish()
         }
-        playButtonCenter.setOnClickListener { goTo<TrySlotActivity>() }
         descriptionHeader.setOnClickListener {
+            showInfo("clicked")
             if(descriptionText.visibility==View.GONE) {
                 descriptionText.visibility = View.VISIBLE
                 descriptionHeader.setCompoundDrawablesWithIntrinsicBounds(null,null, getSupportDrawable(R.drawable.ic_up_arrow_red) ,null)
@@ -131,6 +87,73 @@ class DetailRoot : AppCompatActivity() {
                 tipsHeader.setCompoundDrawablesWithIntrinsicBounds(null,null, getSupportDrawable(R.drawable.ic_down_arrow_red) ,null)
             }
         }
+        playImageOverLayEffect()
+
+        appBarLayout.addOnOffsetChangedListener(customOffsetChangedListener)
+
+    }
+
+    override fun onDestroy() {
+        appBarLayout.removeOnOffsetChangedListener(customOffsetChangedListener)
+        super.onDestroy()
+    }
+
+    override fun onResume() {
+        requestedOrientation= ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        super.onResume()
+    }
+
+    private fun getSlotWithId(id:String?){
+        FirebaseDatabase.getInstance().reference.child("Slots/it/$id")
+        .addListenerForSingleValueEvent(object :ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if(snapshot.getValue(Slot::class.java)!= null) {
+                    val currentSlot = snapshot.getValue(Slot::class.java)
+                    if(currentSlot!=null){
+                        val bundle = Bundle()
+                        bundle.putString("PLAY_LINK",currentSlot.linkPlay)
+                        playButtonCenter.setOnClickListener { goTo<TrySlotActivity>(bundle) }
+                        fab.setOnClickListener { goTo<TrySlotActivity>(bundle) }
+                        bindDataToUI(currentSlot)
+                    }
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+        })
+    }
+
+    private fun bindDataToUI(slot: Slot?){
+        fun addViewsToTipsLayout(){
+            val tipsList = slot?.tips?.split("@")
+            tipsList?.forEach {
+                val cardToAdd = LayoutInflater.from(this).inflate(R.layout.tip_card, tipsCardGroup, false)
+                cardToAdd.tipsText.text = it.fromHtml()
+                tipsCardGroup.addView(cardToAdd)
+            }
+        }
+
+        Glide.with(this).load(slot?.getImageLinkFromName(size = ImgSize.BIG)).into(collapsingImg)
+        Glide.with(this).load(AAMS_LOGO_URL).into(detail_aams_logo)
+        descriptionText.text = slot?.description?.fromHtml()
+        tecnicalsText.text = buildTecnicalString(slot?.tecnicals)
+        addViewsToTipsLayout()
+        // footerText.text= footer.fromHtml()
+        myToolbar.title="ciao"
+    }
+
+    private fun layoutSetup(){
+        windowManager.defaultDisplay.getMetrics(point)
+        // funzioni per settare il layout in modo giusto per API < 21
+        complexScrollView.verticalScrollbarPosition = View.SCROLLBAR_POSITION_LEFT
+        setSupportActionBar(myToolbar)
+        setToolbarFont()
+        fab.getLocationOnScreen(fabInitialPosition)
+    }
+
+    private fun setAllOnClickListners(){
+
     }
 
     private fun collapseLayoutBehaviours():AppBarLayout.OnOffsetChangedListener{
@@ -268,11 +291,11 @@ class DetailRoot : AppCompatActivity() {
         }
     }
 
-    private fun buildTecnicalString():Spanned{
+    private fun buildTecnicalString(string: String?):Spanned{
         var s =""
-//        descrizioneEsempio.technicals?.split("@")?.forEach {
-//            s+="<p>- $it\n\n</p>"
-//        }
+        string?.split("$")?.forEach {
+            s+="<p>- $it\n\n</p>"
+        }
         return s.fromHtml()
     }
 

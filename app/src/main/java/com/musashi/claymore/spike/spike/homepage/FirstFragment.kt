@@ -74,7 +74,11 @@ class FirstFragment : Fragment() {
         .addListenerForSingleValueEvent(object :ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 snapshot.children.reversed().map { it.getValue<SlotCard>(SlotCard::class.java)?.time }.toString() log "FETCHED_LIST"
-                snapshot.children.reversed().mapNotNullTo(slotList, {it.getValue<SlotCard>(SlotCard::class.java)})
+                snapshot.children.reversed().mapNotNullTo(slotList, {
+                    val s = it.getValue<SlotCard>(SlotCard::class.java)
+                    s?.id= it.key
+                    s
+                })
                 chunkNumber++
                 loading=false
                 slotRc.adapter.notifyDataSetChanged()
@@ -110,7 +114,9 @@ class FirstFragment : Fragment() {
             fun bindView(data: SlotCard) {
                 itemView.cardSlotTitle.text = data.name
                 itemView.setOnClickListener {
-                    (activity as AppCompatActivity).goTo<DetailRoot>()
+                    val bundle = Bundle()
+                    bundle.putString("SLOT_ID", data.id)
+                    (activity as AppCompatActivity).goTo<DetailRoot>(bundle)
                 }
                 Glide.with(activity).load(data.getImageLinkFromName()).into(itemView.cardSlotImage)
             }

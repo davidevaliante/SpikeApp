@@ -1,17 +1,15 @@
 package com.musashi.claymore.spike.spike
 
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.Index
-import android.arch.persistence.room.PrimaryKey
-import android.arch.persistence.room.TypeConverter
-import java.util.*
+
+import kotlin.collections.HashMap
 
 data class Bonus(var bonus : String?=null, var image : String?=null, var link : String?=null, var name:String?=null,var producer:Producer?=null, var rating:String?=null,var review:String?=null)
 data class Producer(var id:String?=null, var name:String?=null,var image:String?=null,var link:String?=null)
 
 
 data class Slot(
-        var bonus:List<Bonus>? = null,
+        var id:String?=null,
+        var bonus:HashMap<String,Bonus>? = null,
         var isFake:Boolean?=null,
         var description:String?=null,
         var linkPlay:String?=null,
@@ -26,6 +24,7 @@ data class Slot(
 )
 
 data class SlotCard(
+        var id:String?=null,
         var description:String?=null,
         var name: String?=null,
         var producer: String?=null,
