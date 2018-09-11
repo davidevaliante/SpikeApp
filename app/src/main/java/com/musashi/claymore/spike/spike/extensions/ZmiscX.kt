@@ -30,6 +30,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import com.google.firebase.database.DatabaseReference
 import es.dmoral.toasty.Toasty
+import java.util.*
 
 // per trasformare in snakeCase il nome di una slot
 fun String.toSnakeCase():String{
@@ -69,8 +70,9 @@ fun String.upperFirstLowerRest() : String{
     return firstLetter+rest
 }
 
-
-
+// 0..10 will return an `Int` between 0 and 10 (incl.)
+fun ClosedRange<Int>.random() =
+        Random().nextInt((endInclusive + 1) - start) +  start
 
 
 

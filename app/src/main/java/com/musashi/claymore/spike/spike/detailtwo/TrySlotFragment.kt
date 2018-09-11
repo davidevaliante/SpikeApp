@@ -1,4 +1,4 @@
-package com.musashi.claymore.spike.spike.detail
+package com.musashi.claymore.spike.spike.detailtwo
 
 import android.os.Bundle
 import android.support.v4.app.Fragment

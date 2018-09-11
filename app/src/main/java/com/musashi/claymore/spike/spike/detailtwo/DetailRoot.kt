@@ -23,16 +23,22 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.musashi.claymore.spike.spike.TrySlotActivity
 import com.musashi.claymore.spike.spike.constants.ImgSize
 import com.musashi.claymore.spike.spike.getImageLinkFromName
 import fromHtml
-import io.reactivex.internal.util.NotificationLite.getValue
 import kotlinx.android.synthetic.main.tip_card.view.*
+import android.content.Intent
+import android.net.Uri
+import android.support.v7.widget.LinearLayoutManager
+import android.text.Editable
+import android.text.TextWatcher
+import com.musashi.claymore.spike.spike.SlotCard
+import com.musashi.claymore.spike.spike.homepage.HomePage
+import kotlinx.android.synthetic.main.activity_home_page.*
+import kotlinx.android.synthetic.main.bonus_card.view.*
 
 
 class DetailRoot : AppCompatActivity() {
-
 
     // container posizione iniziale Floating action button
     private var fabInitialPosition = IntArray(2)
@@ -44,6 +50,7 @@ class DetailRoot : AppCompatActivity() {
     private val customOffsetChangedListener by lazy { collapseLayoutBehaviours() }
     private val AAMS_LOGO_URL = "https://seeklogo.com/images/A/AAMS_Timone_Gioco_Sicuro-logo-8525C3341F-seeklogo.com.png"
     private val screenDensity by lazy { resources.displayMetrics.density }
+    var searchResults:MutableList<SlotCard> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,14 +60,145 @@ class DetailRoot : AppCompatActivity() {
         getSlotWithId(id)
         layoutSetup()
         setAllOnClickListners()
+        playImageOverLayEffect()
+        appBarLayout.addOnOffsetChangedListener(customOffsetChangedListener)
+        detailSearchRc.layoutManager= LinearLayoutManager(this)
+        detailSearchRc.adapter= HomePage.SearchSlotAdapter(searchResults, this)
+        searchFieldEditText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                Do.after(200).milliseconds {
+                    if(s?.toString()?.length!! >=1) searchSlotByName(s?.toString())
+                    else {
+                        (detailSearchRc.adapter as HomePage.SearchSlotAdapter).updateList(emptyList())
+                    }
+                }
+            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
+    }
+
+    override fun onStop() {
+        super.onStop()
+        searchFieldEditText.setText("")
+        (detailSearchRc.adapter as HomePage.SearchSlotAdapter).updateList(searchResults)
+    }
+
+    override fun onDestroy() {
+        appBarLayout.removeOnOffsetChangedListener(customOffsetChangedListener)
+        super.onDestroy()
+    }
+
+    override fun onResume() {
+        requestedOrientation= ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        super.onResume()
+    }
+
+    private fun searchSlotByName(s:String){
+        val string = s.toUpperCase()
+        FirebaseDatabase.getInstance().reference.child("SlotsCard").child("it")
+                .orderByChild("name").startAt(string).endAt("$string\uf8ff")
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        searchResults.removeAll { it!=null }
+                        snapshot.children.mapNotNullTo(searchResults, {
+                            val result = it.getValue<SlotCard>(SlotCard::class.java)
+                            result?.id=it.key
+                            result
+                        })
+                        (detailSearchRc.adapter as HomePage.SearchSlotAdapter).updateList(searchResults)
+                    }
+                    override fun onCancelled(error: DatabaseError) {
+                    }
+                })
+    }
+
+    private fun getSlotWithId(id:String?){
+        FirebaseDatabase.getInstance().reference.child("Slots/it/$id")
+        .addListenerForSingleValueEvent(object :ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if(snapshot.getValue(Slot::class.java)!= null) {
+                    val currentSlot = snapshot.getValue(Slot::class.java)
+                    if(currentSlot!=null){
+                        // per i pulsanti
+                        val bundle = Bundle()
+                        bundle.putString("PLAY_LINK",currentSlot.linkPlay)
+                        bundle.putSerializable("BONUS_LIST", currentSlot.bonus)
+                        playButtonCenter.setOnClickListener { goTo<TrySlotActivity>(bundle) }
+                        fab.setOnClickListener { goTo<TrySlotActivity>(bundle) }
+
+                        fabYoutube.setOnClickListener {
+                            val intent = Intent(Intent.ACTION_VIEW)
+                            intent.data = Uri.parse(currentSlot.linkYoutube)
+                            startActivity(intent)
+                        }
+
+                        // per l'UI
+                        bindDataToUI(currentSlot)
+                    }
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+        })
+    }
+
+    private fun bindDataToUI(slot: Slot?){
+        // aggiunge dinamicamente le carte dei consigli
+        fun addViewsToTipsLayout(){
+            val tipsList = slot?.tips?.split("@")
+            tipsList?.slice(1 until (tipsList.size))?.forEach {
+                val cardToAdd = LayoutInflater.from(this).inflate(R.layout.tip_card, tipsCardGroup, false)
+                cardToAdd.tipsText.text = it.fromHtml()
+                tipsCardGroup.addView(cardToAdd)
+            }
+        }
+
+        // aggiunge dinamicamente le carte dei bonus
+        fun addViewsToBonusLayout(){
+            slot?.bonus?.entries?.forEach {
+                val currentBonus = it.value
+                val cardToAdd = LayoutInflater.from(this).inflate(R.layout.bonus_card, bonusGroup, false)
+                cardToAdd.bonusTitle.text=currentBonus.name
+                cardToAdd.bonusDescription.text=currentBonus.bonus
+                Glide.with(this).load(currentBonus.getImageLinkFromName(ImgSize.BIG)).into(cardToAdd.bonusImage)
+                cardToAdd.setOnClickListener {
+                    val intent = Intent(Intent.ACTION_VIEW)
+                    intent.data = Uri.parse(currentBonus.link)
+                    startActivity(intent)
+                }
+                bonusGroup.addView(cardToAdd)
+            }
+        }
+
+
+        Glide.with(this).load(slot?.getImageLinkFromName(size = ImgSize.BIG)).into(collapsingImg)
+        Glide.with(this).load(AAMS_LOGO_URL).into(detail_aams_logo)
+        descriptionText.text = slot?.description?.fromHtml()
+        tecnicalsText.text = buildTecnicalString(slot?.tecnicals)
+        addViewsToTipsLayout()
+        addViewsToBonusLayout()
+        supportActionBar?.title=slot?.name?.toLowerCase()?.capitalize()
+    }
+
+    private fun layoutSetup(){
+        windowManager.defaultDisplay.getMetrics(point)
+        // funzioni per settare il layout in modo giusto per API < 21
+        complexScrollView.verticalScrollbarPosition = View.SCROLLBAR_POSITION_LEFT
+        myToolbar.title=""
+        setSupportActionBar(myToolbar)
+        setToolbarFont()
+        fab.getLocationOnScreen(fabInitialPosition)
+    }
+
+    private fun setAllOnClickListners(){
         fabShare.setOnClickListener { showInfo("share pagina su whatsapp/telegram/Facebook") }
-        fabYoutube.setOnClickListener { showInfo("va alla pagina con il video di youtube correlato") }
         backArrow.setOnClickListener {
             appBarLayout.removeOnOffsetChangedListener(customOffsetChangedListener)
             finish()
         }
         descriptionHeader.setOnClickListener {
-            showInfo("clicked")
             if(descriptionText.visibility==View.GONE) {
                 descriptionText.visibility = View.VISIBLE
                 descriptionHeader.setCompoundDrawablesWithIntrinsicBounds(null,null, getSupportDrawable(R.drawable.ic_up_arrow_red) ,null)
@@ -87,73 +225,6 @@ class DetailRoot : AppCompatActivity() {
                 tipsHeader.setCompoundDrawablesWithIntrinsicBounds(null,null, getSupportDrawable(R.drawable.ic_down_arrow_red) ,null)
             }
         }
-        playImageOverLayEffect()
-
-        appBarLayout.addOnOffsetChangedListener(customOffsetChangedListener)
-
-    }
-
-    override fun onDestroy() {
-        appBarLayout.removeOnOffsetChangedListener(customOffsetChangedListener)
-        super.onDestroy()
-    }
-
-    override fun onResume() {
-        requestedOrientation= ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        super.onResume()
-    }
-
-    private fun getSlotWithId(id:String?){
-        FirebaseDatabase.getInstance().reference.child("Slots/it/$id")
-        .addListenerForSingleValueEvent(object :ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if(snapshot.getValue(Slot::class.java)!= null) {
-                    val currentSlot = snapshot.getValue(Slot::class.java)
-                    if(currentSlot!=null){
-                        val bundle = Bundle()
-                        bundle.putString("PLAY_LINK",currentSlot.linkPlay)
-                        playButtonCenter.setOnClickListener { goTo<TrySlotActivity>(bundle) }
-                        fab.setOnClickListener { goTo<TrySlotActivity>(bundle) }
-                        bindDataToUI(currentSlot)
-                    }
-                }
-            }
-            override fun onCancelled(error: DatabaseError) {
-
-            }
-        })
-    }
-
-    private fun bindDataToUI(slot: Slot?){
-        fun addViewsToTipsLayout(){
-            val tipsList = slot?.tips?.split("@")
-            tipsList?.forEach {
-                val cardToAdd = LayoutInflater.from(this).inflate(R.layout.tip_card, tipsCardGroup, false)
-                cardToAdd.tipsText.text = it.fromHtml()
-                tipsCardGroup.addView(cardToAdd)
-            }
-        }
-
-        Glide.with(this).load(slot?.getImageLinkFromName(size = ImgSize.BIG)).into(collapsingImg)
-        Glide.with(this).load(AAMS_LOGO_URL).into(detail_aams_logo)
-        descriptionText.text = slot?.description?.fromHtml()
-        tecnicalsText.text = buildTecnicalString(slot?.tecnicals)
-        addViewsToTipsLayout()
-        // footerText.text= footer.fromHtml()
-        myToolbar.title="ciao"
-    }
-
-    private fun layoutSetup(){
-        windowManager.defaultDisplay.getMetrics(point)
-        // funzioni per settare il layout in modo giusto per API < 21
-        complexScrollView.verticalScrollbarPosition = View.SCROLLBAR_POSITION_LEFT
-        setSupportActionBar(myToolbar)
-        setToolbarFont()
-        fab.getLocationOnScreen(fabInitialPosition)
-    }
-
-    private fun setAllOnClickListners(){
-
     }
 
     private fun collapseLayoutBehaviours():AppBarLayout.OnOffsetChangedListener{
@@ -190,22 +261,8 @@ class DetailRoot : AppCompatActivity() {
                 searchFieldGroup.visibility=View.GONE
             }
         }
-        fun reverseGradientFadeIn(){
-            Do after 200 milliseconds {
-                val t = Fade(Fade.MODE_IN)
-                t.duration=1600
-                TransitionManager.beginDelayedTransition(coordinator,t)
-                reverse_gradient.visibility=View.VISIBLE
-            }
-        }
-        fun reverseGradientFadeOut(){
-            Do after 100 milliseconds {
-                val t = Fade(Fade.MODE_OUT)
-                t.duration=800
-                TransitionManager.beginDelayedTransition(coordinator,t)
-                reverse_gradient.visibility=View.INVISIBLE
-            }
-        }
+
+
         fun hidePlayButtonCenter(){
             playButtonCenter.visibility=View.GONE
         }
@@ -250,7 +307,6 @@ class DetailRoot : AppCompatActivity() {
                         "collapsed" log "COLLAPSEBAR"
                         backArrowFadeIn()
                         searchBarFadeOut()
-                        reverseGradientFadeOut()
                         hidePlayButtonCenter()
                         fabGroupAnimateIn()
                     }
@@ -260,7 +316,6 @@ class DetailRoot : AppCompatActivity() {
                         expandedModeShouldBePlayed=true
                         collapsedModeShouldBePlayed=false
                         backArrowFadeOut()
-                        reverseGradientFadeIn()
                         showPlayButtonCenter()
                         searchBarFadeIn()
                         fabGroupAnimateOut()
@@ -293,7 +348,7 @@ class DetailRoot : AppCompatActivity() {
 
     private fun buildTecnicalString(string: String?):Spanned{
         var s =""
-        string?.split("$")?.forEach {
+        string?.slice(1 until string.length)?.split("$")?.forEach {
             s+="<p>- $it\n\n</p>"
         }
         return s.fromHtml()

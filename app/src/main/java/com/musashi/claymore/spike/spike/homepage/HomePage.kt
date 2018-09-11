@@ -11,22 +11,35 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
 import android.support.v4.view.animation.FastOutSlowInInterpolator
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import aqua.extensions.Do
 import aqua.extensions.goTo
+import aqua.extensions.log
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.musashi.claymore.spike.spike.Slot
 import com.musashi.claymore.spike.spike.R
+import com.musashi.claymore.spike.spike.R.id.*
+import com.musashi.claymore.spike.spike.SlotCard
 import com.musashi.claymore.spike.spike.detailtwo.DetailRoot
 import kotlinx.android.synthetic.main.activity_home_page.*
+import kotlinx.android.synthetic.main.search_card.view.*
 import kotlinx.android.synthetic.main.slot_card.view.*
 import java.util.*
 
 class HomePage : AppCompatActivity() {
 
+    var searchResults:MutableList<SlotCard> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,9 +50,46 @@ class HomePage : AppCompatActivity() {
         homeAppar.addOnOffsetChangedListener(collapseLayoutBehaviours())
         viewPager.adapter=TabsAdapter(supportFragmentManager, listOf(FirstFragment(),SecondFragment()))
         tabs.setupWithViewPager(viewPager)
+        searchRc.layoutManager=LinearLayoutManager(this)
+        searchRc.adapter=SearchSlotAdapter(searchResults,this)
+        searchFieldEditTextHome.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                Do.after(200).milliseconds {
+                    if(s?.toString()?.length!! >=1) searchSlotByName(s?.toString())
+                    else {
+                        (searchRc.adapter as SearchSlotAdapter).updateList(emptyList())
+                    }
+                }
+            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
     }
 
+    private fun searchSlotByName(s:String){
+        val string = s.toUpperCase()
+        FirebaseDatabase.getInstance().reference.child("SlotsCard").child("it")
+                .orderByChild("name").startAt(string).endAt("$string\uf8ff")
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        searchResults.removeAll { it!=null }
+                        snapshot.children.mapNotNullTo(searchResults, {
+                            val result = it.getValue<SlotCard>(SlotCard::class.java)
+                            result?.id=it.key
+                            result
+                        })
+                        (searchRc.adapter as SearchSlotAdapter).updateList(searchResults)
+                    }
+                    override fun onCancelled(error: DatabaseError) {
+                    }
+                })
+    }
 
+    override fun onStop() {
+        super.onStop()
+        searchFieldEditTextHome.setText("")
+        (searchRc.adapter as SearchSlotAdapter).updateList(searchResults)
+    }
 
     class TabsAdapter(fragmentManager: FragmentManager, private val frags: List<Fragment>) :
             FragmentStatePagerAdapter(fragmentManager) {
@@ -59,32 +109,33 @@ class HomePage : AppCompatActivity() {
         }
     }
 
-    class SlotAdapter(var slotList: List<Slot>, val activity: Activity) : RecyclerView.Adapter<SlotAdapter.SlotViewholder>() {
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SlotViewholder {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.slot_card, parent, false)
-            return SlotViewholder(view)
+    class SearchSlotAdapter(var slotList: List<SlotCard>, val activity: Activity) : RecyclerView.Adapter<SearchSlotAdapter.SlotCardViewholder>() {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SlotCardViewholder {
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.search_card, parent, false)
+            return SlotCardViewholder(view)
 
         }
 
         override fun getItemCount(): Int = slotList.size
 
-        override fun onBindViewHolder(holder: SlotViewholder, position: Int) {
+        override fun onBindViewHolder(holder: SlotCardViewholder, position: Int) {
             holder.bindView(slotList[position])
         }
 
-        fun updateList(newList: List<Slot>) {
+        fun updateList(newList: List<SlotCard>) {
             this.slotList = newList
             notifyDataSetChanged()
         }
 
-        inner class SlotViewholder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            fun bindView(data: Slot) {
-                itemView.cardSlotTitle.text = data.name
+        inner class SlotCardViewholder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+            fun bindView(data: SlotCard) {
+                itemView.searchCardTitle.text = data.name?.toLowerCase()?.capitalize()
                 itemView.setOnClickListener {
-                    (activity as AppCompatActivity).goTo<DetailRoot>()
+                    val bundle = Bundle()
+                    bundle.putString("SLOT_ID", data.id)
+                    (activity as AppCompatActivity).goTo<DetailRoot>(bundle)
                 }
             }
-
         }
     }
 

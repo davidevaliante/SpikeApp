@@ -1,10 +1,11 @@
 package com.musashi.claymore.spike.spike
 
 
+import java.io.Serializable
 import kotlin.collections.HashMap
 
-data class Bonus(var bonus : String?=null, var image : String?=null, var link : String?=null, var name:String?=null,var producer:Producer?=null, var rating:String?=null,var review:String?=null)
-data class Producer(var id:String?=null, var name:String?=null,var image:String?=null,var link:String?=null)
+data class Bonus(var bonus : String?=null, var image : String?=null, var link : String?=null, var name:String?=null,var producer:Producer?=null, var rating:String?=null,var review:String?=null):Serializable
+data class Producer(var id:String?=null, var name:String?=null,var image:String?=null,var link:String?=null):Serializable
 
 
 data class Slot(
