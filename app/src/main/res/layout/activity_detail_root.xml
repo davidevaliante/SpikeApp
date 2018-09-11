@@ -84,8 +84,6 @@
                 style="@style/ToolBarStyle.Event"
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                app:title="Pyramid"
-                app:subtitle="Quest for immortality"
                 app:titleTextColor="@color/white">
 
                 <ImageView
@@ -110,6 +108,10 @@
     </android.support.design.widget.AppBarLayout>
 
 
+    <android.support.v4.widget.NestedScrollView
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
     <LinearLayout
         android:id="@+id/scrollingLayout"
@@ -147,12 +149,6 @@
 
         </LinearLayout>
 
-        <View
-            android:id="@+id/reverse_gradient"
-            android:visibility="gone"
-            android:background="@drawable/reverse_red_gradient"
-            android:layout_width="match_parent"
-            android:layout_height="2dp"/>
         <LinearLayout
             android:animateLayoutChanges="true"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -213,6 +209,7 @@
         </LinearLayout>
 
     </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
 
     <RelativeLayout
         android:layout_marginTop="26dp"
@@ -250,7 +247,14 @@
                 android:layout_height="2dp"/>
         </android.support.v7.widget.CardView>
     </RelativeLayout>
-
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/detailSearchRc"
+        android:layout_marginTop="56dp"
+        android:layout_gravity="top"
+        android:layout_below="@+id/searchFieldBottomLine"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </android.support.v7.widget.RecyclerView>
 
 
 </android.support.design.widget.CoordinatorLayout>

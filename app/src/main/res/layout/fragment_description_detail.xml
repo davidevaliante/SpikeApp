@@ -345,17 +345,9 @@
                         android:padding="16dp"
                         android:text="First list"
                         android:visibility="gone" />
-
                 </LinearLayout>
-
             </android.support.v7.widget.CardView>
-
-
         </LinearLayout>
-
-
-
-
     </RelativeLayout>
 
 

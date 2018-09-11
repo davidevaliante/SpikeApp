@@ -8,9 +8,12 @@ import android.support.v4.app.FragmentActivity
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import aqua.extensions.Do
 import aqua.extensions.goTo
 import aqua.extensions.log
 import aqua.extensions.showInfo
@@ -19,13 +22,11 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.musashi.claymore.spike.spike.Slot
+import com.musashi.claymore.spike.spike.*
 
-import com.musashi.claymore.spike.spike.R
-import com.musashi.claymore.spike.spike.SlotCard
 import com.musashi.claymore.spike.spike.constants.AppTypes
 import com.musashi.claymore.spike.spike.detailtwo.DetailRoot
-import com.musashi.claymore.spike.spike.getImageLinkFromName
+import kotlinx.android.synthetic.main.activity_home_page.*
 import kotlinx.android.synthetic.main.fragment_first.*
 import kotlinx.android.synthetic.main.slot_card.view.*
 
@@ -61,6 +62,8 @@ class FirstFragment : Fragment() {
                 }
             }
         })
+
+
     }
 
     override fun onStart() {
@@ -68,12 +71,13 @@ class FirstFragment : Fragment() {
         loadNextChunk()
     }
 
+
+
     private fun loadNextChunk (time:Double=System.currentTimeMillis().toDouble()) {
         loading=true
         slotNode.orderByChild("time").endAt(time).limitToLast(chunkSize*chunkNumber)
         .addListenerForSingleValueEvent(object :ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
-                snapshot.children.reversed().map { it.getValue<SlotCard>(SlotCard::class.java)?.time }.toString() log "FETCHED_LIST"
                 snapshot.children.reversed().mapNotNullTo(slotList, {
                     val s = it.getValue<SlotCard>(SlotCard::class.java)
                     s?.id= it.key
