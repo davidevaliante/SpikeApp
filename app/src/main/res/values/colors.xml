@@ -11,6 +11,7 @@
 
     <color name="transparent">#00000000</color>
     <color name="black">#000000</color>
+    <color name="mainBg">#2e2c2c</color>
 
     <!--text colors-->
     <color name="high_enphasis_text">#000000</color>

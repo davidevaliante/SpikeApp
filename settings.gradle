@@ -1,1 +1,1 @@
-include ':app', ':animatedsearchview', ':animatedsearchbar'
+include ':app'

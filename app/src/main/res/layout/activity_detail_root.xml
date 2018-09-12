@@ -14,7 +14,7 @@
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_height="300dp"
         android:background="@color/transparent"
         android:fitsSystemWindows="true"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
@@ -111,21 +111,17 @@
     </android.support.design.widget.AppBarLayout>
 
 
-    <android.support.v4.widget.NestedScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-        <LinearLayout
-            android:id="@+id/scrollingLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:animateLayoutChanges="true"
-            android:background="@color/white"
-            android:orientation="vertical"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+   <LinearLayout
+    android:id="@+id/scrollingLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:background="@color/white"
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <LinearLayout
+                android:id="@+id/aamsGroup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
@@ -157,38 +153,41 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:animateLayoutChanges="true"
-                android:orientation="vertical"
+                android:orientation="horizontal"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+                <!--fab group-->
                 <RelativeLayout
                     android:id="@+id/fabGroup"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="8dp"
-                    android:visibility="gone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:padding="0dp"
+                    android:visibility="visible"
                     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
                     <android.support.design.widget.FloatingActionButton
                         android:id="@+id/fab"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
                         android:layout_gravity="center"
-                        android:layout_marginStart="16dp"
-                        android:visibility="visible"
-                        app:backgroundTint="@color/darkRed"
-                        app:fabSize="normal"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginBottom="16dp"
+                        android:layout_marginTop="32dp"
+                        android:layout_marginEnd="8dp"
+                        android:visibility="invisible"
+                        app:backgroundTint="@color/redPrimary"
+                        app:fabSize="mini"
                         app:srcCompat="@drawable/ic_play_button" />
 
                     <android.support.design.widget.FloatingActionButton
                         android:id="@+id/fabShare"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
                         android:layout_gravity="center"
-                        android:layout_marginStart="16dp"
-                        android:layout_toLeftOf="@id/fab"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="16dp"
+                        android:layout_below="@id/fab"
                         android:visibility="gone"
                         app:backgroundTint="@color/white"
                         app:fabSize="mini"
@@ -198,10 +197,11 @@
                         android:id="@+id/fabYoutube"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
                         android:layout_gravity="center"
-                        android:layout_marginStart="16dp"
-                        android:layout_toLeftOf="@id/fabShare"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="16dp"
+                        android:layout_below="@id/fabShare"
                         android:visibility="gone"
                         app:backgroundTint="@color/white"
                         app:fabSize="mini"
@@ -213,8 +213,7 @@
 
             </LinearLayout>
 
-        </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
+     </LinearLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"

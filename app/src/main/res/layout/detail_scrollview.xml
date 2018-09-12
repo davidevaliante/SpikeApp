@@ -6,120 +6,141 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:animateLayoutChanges="true"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <LinearLayout
-        android:animateLayoutChanges="true"
-        android:orientation="vertical"
-        android:layout_marginEnd="32dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:animateLayoutChanges="true"
+        android:orientation="vertical">
 
         <LinearLayout
-            android:padding="10dp"
-            android:animateLayoutChanges="true"
             android:id="@+id/descriptionButtonGroup"
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            android:orientation="vertical"
+            android:paddingEnd="16dp"
+            android:layout_marginBottom="8dp"
+            android:padding="0dp">
 
             <TextView
-                android:drawableEnd="@drawable/ic_down_arrow_red"
                 android:id="@+id/descriptionHeader"
-                android:text="Descrizione"
-                style="@style/Header"
                 android:layout_width="match_parent"
-                android:drawablePadding="16dp"
-                />
-
-            <TextView
-                android:visibility="gone"
-                android:id="@+id/descriptionText"
-                android:text="@string/lorem"
-                style="@style/TextContent" />
-        </LinearLayout>
-
-
-
-        <View
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/dark_gradient"
-            android:layout_width="match_parent"
-            android:layout_height="2dp"/>
-
-        <LinearLayout
-            android:animateLayoutChanges="true"
-            android:padding="10dp"
-            android:id="@+id/tecnicalsButtonGroup"
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TextView
+                android:layout_height="wrap_content"
+                android:textSize="28sp"
+                android:padding="8dp"
                 android:drawableEnd="@drawable/ic_down_arrow_red"
                 android:drawablePadding="16dp"
-                android:id="@+id/tecnicalsHeader"
-                android:text="Scheda tecnica"
-                style="@style/Header" />
+                android:fontFamily="@font/raleway_semibold"
+                android:text="Descrizione"
+                android:textColor="@color/shaded_black_alpha_90" />
 
             <TextView
-                android:visibility="gone"
-                android:id="@+id/tecnicalsText"
+                android:id="@+id/descriptionText"
+                style="@style/TextContent"
                 android:text="@string/lorem"
-                style="@style/TextContent" />
+                android:visibility="gone" />
         </LinearLayout>
 
         <View
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/dark_gradient"
             android:layout_width="match_parent"
-            android:layout_height="2dp"/>
+            android:layout_height="2dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/dark_gradient" />
 
         <LinearLayout
-            android:animateLayoutChanges="true"
-            android:padding="10dp"
-            android:id="@+id/tipsButtonGroup"
-            android:orientation="vertical"
+            android:id="@+id/tecnicalsButtonGroup"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical"
+            android:paddingEnd="16dp">
+
             <TextView
+                android:id="@+id/tecnicalsHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="28sp"
+                android:padding="8dp"
+                android:drawableEnd="@drawable/ic_down_arrow_red"
+                android:drawablePadding="16dp"
+                android:fontFamily="@font/raleway_semibold"
+                android:text="Scheda tecnica"
+                android:textColor="@color/shaded_black_alpha_90" />
+
+            <TextView
+                android:id="@+id/tecnicalsText"
+                style="@style/TextContent"
+                android:text="@string/lorem"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/dark_gradient" />
+
+        <LinearLayout
+            android:id="@+id/tipsButtonGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            android:orientation="vertical"
+            android:layout_marginTop="16dp"
+            android:paddingEnd="16dp">
+
+            <TextView
+                android:id="@+id/tipsHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="28sp"
+                android:padding="8dp"
                 android:drawableEnd="@drawable/ic_down_arrow_red"
                 android:drawablePadding="18dp"
-                android:id="@+id/tipsHeader"
-                android:textSize="24sp"
+                android:fontFamily="@font/raleway_semibold"
                 android:text="Consigli di gioco"
-                style="@style/Header" />
+                android:textColor="@color/shaded_black_alpha_90"
+                />
 
             <LinearLayout
-                android:visibility="gone"
                 android:id="@+id/tipsCardGroup"
-                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
 
             </LinearLayout>
         </LinearLayout>
 
         <View
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/dark_gradient"
             android:layout_width="match_parent"
-            android:layout_height="2dp"/>
+            android:layout_height="2dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/dark_gradient" />
 
         <TextView
             android:id="@+id/footerText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:padding="8dp"
             android:layout_marginTop="16dp"
+            android:fontFamily="@font/raleway_semibold"
             android:text="Passa dalla teoria alla pratica con questi fantastici bonus !"
-            style="@style/TextContent" />
+            android:textColor="@color/shaded_black_alpha_90" />
 
         <LinearLayout
             android:id="@+id/bonusGroup"
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
         </LinearLayout>
 
