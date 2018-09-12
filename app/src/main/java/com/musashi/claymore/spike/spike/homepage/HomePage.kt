@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
 import android.support.v4.view.animation.FastOutSlowInInterpolator
+import android.support.v7.util.DiffUtil
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.Editable
@@ -18,10 +19,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import aqua.extensions.Do
-import aqua.extensions.getSupportDrawable
-import aqua.extensions.goTo
-import aqua.extensions.log
+import aqua.extensions.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.firebase.database.DataSnapshot
@@ -98,8 +96,9 @@ class HomePage : AppCompatActivity() {
             override fun afterTextChanged(s: Editable?) {
                 // se non sta facendo già una richiesta
                 Do.after(300).milliseconds {
-                    if(!isSearchingSlot)
-                        if(s?.toString()?.length!! >=1) searchSlotByName(s?.toString())
+                    if (!isSearchingSlot)
+                        if (s != null && s.isNotEmpty())
+                            searchSlotByName(s?.toString())
                         else {
                             (searchRc.adapter as HomePage.SearchSlotAdapter).updateList(emptyList())
                         }
@@ -128,11 +127,11 @@ class HomePage : AppCompatActivity() {
         }
     }
 
-    class SearchSlotAdapter(var slotList: List<SlotCard>, val activity: Activity) : RecyclerView.Adapter<SearchSlotAdapter.SlotCardViewholder>() {
+    class SearchSlotAdapter(var slotList: List<SlotCard>, val activity: Activity)
+        : RecyclerView.Adapter<SearchSlotAdapter.SlotCardViewholder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SlotCardViewholder {
             val view = LayoutInflater.from(parent.context).inflate(R.layout.search_card, parent, false)
             return SlotCardViewholder(view)
-
         }
 
         override fun getItemCount(): Int = slotList.size
@@ -142,13 +141,14 @@ class HomePage : AppCompatActivity() {
         }
 
         fun updateList(newList: List<SlotCard>) {
-            this.slotList = newList
+            this.slotList=newList
             notifyDataSetChanged()
         }
 
         inner class SlotCardViewholder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             fun bindView(data: SlotCard) {
                 itemView.searchCardTitle.text = data.name?.toLowerCase()?.capitalize()
+                itemView.searchCardProducer.text = data.producer
                 itemView.setOnClickListener {
                     val bundle = Bundle()
                     bundle.putString("SLOT_ID", data.id)

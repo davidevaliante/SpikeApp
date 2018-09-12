@@ -18,7 +18,7 @@ class SplashScreen : AppCompatActivity() {
 
         timeIndicator.show()
 
-        Do after 1000 milliseconds  {
+        Do after 500 milliseconds  {
             goTo<HomePage>()
             finish()
         }

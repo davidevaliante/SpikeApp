@@ -33,7 +33,7 @@
     <style name="Header" parent="@android:style/TextAppearance.Widget.TextView"> //Change Medium to Small
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">30sp</item>  <!--Or Change the font size -->
+        <item name="android:textSize">28sp</item>  <!--Or Change the font size -->
         <item name="android:textColor">@color/high_enphasis_text</item>
         <item name="android:fontFamily">@font/raleway_regular</item>
         <item name="android:paddingTop">16dp</item>
@@ -47,8 +47,8 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">16sp</item>  <!--Or Change the font size -->
         <item name="android:textColor">@color/medium_enphasis_text</item>
-        <item name="android:fontFamily">@font/montserrat_regular</item>
-        <item name="android:padding">16dp</item>
+        <item name="android:fontFamily">@font/raleway_regular</item>
+        <item name="android:padding">8dp</item>
 
     </style>
 

@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import aqua.extensions.goTo
 import aqua.extensions.log
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -22,6 +23,8 @@ import com.musashi.claymore.spike.spike.detailtwo.DetailRoot
 import kotlinx.android.synthetic.main.activity_home_page.*
 import kotlinx.android.synthetic.main.fragment_first.*
 import kotlinx.android.synthetic.main.slot_card.view.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class FirstFragment : Fragment() {
@@ -41,6 +44,8 @@ class FirstFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        slotNode.keepSynced(true)
+
         slotRc.layoutManager = GridLayoutManager(activity, 2)
         slotRc.adapter = SlotAdapter(slotList, activity as Activity)
 
@@ -49,7 +54,7 @@ class FirstFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        loadNextChunk()
+        if(slotList.size==0) loadNextChunk()
     }
 
     private fun customScrollListener(): RecyclerView.OnScrollListener {
@@ -115,13 +120,25 @@ class FirstFragment : Fragment() {
 
         inner class SlotViewholder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             fun bindView(data: SlotCard) {
-                itemView.cardSlotTitle.text = data.name
+                if(data.time!=null){
+                    val time = Date((data.time as Double).toLong())
+                    val format = SimpleDateFormat("MMM/YYYY")
+                    val dateString = format.format(time)
+                    itemView.cardSlotTime.text= "Aggiornato $dateString"
+                }
+
+                itemView.cardSlotTitle.text = data.name?.toLowerCase()?.capitalize()
+                itemView.cardSlotRating.text = "Voto ${data.rating}"
                 itemView.setOnClickListener {
                     val bundle = Bundle()
                     bundle.putString("SLOT_ID", data.id)
                     (activity as AppCompatActivity).goTo<DetailRoot>(bundle)
                 }
-                Glide.with(activity).load(data.getImageLinkFromName()).thumbnail(0.1f).into(itemView.cardSlotImage)
+                Glide.with(activity)
+                        .load(data.getImageLinkFromName())
+                        .transition(DrawableTransitionOptions.withCrossFade())
+                        .thumbnail(0.1f)
+                        .into(itemView.cardSlotImage)
             }
         }
     }

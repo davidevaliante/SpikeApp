@@ -29,6 +29,8 @@ import fromHtml
 import kotlinx.android.synthetic.main.tip_card.view.*
 import android.content.Intent
 import android.net.Uri
+import android.support.v4.view.animation.FastOutLinearInInterpolator
+import android.support.v4.view.animation.FastOutSlowInInterpolator
 import android.support.v7.widget.LinearLayoutManager
 import android.text.Editable
 import android.text.TextWatcher
@@ -232,10 +234,11 @@ class DetailRoot : AppCompatActivity() {
     private fun searchSlot() : TextWatcher {
         return object :TextWatcher{
             override fun afterTextChanged(s: Editable?) {
-
+                // se non sta facendo già una richiesta
                 Do.after(300).milliseconds {
-                    if(!isSearchingSlot)
-                        if(s?.toString()?.length!! >=1) searchSlotByName(s?.toString())
+                    if (!isSearchingSlot)
+                        if (s != null && s.isNotEmpty())
+                            searchSlotByName(s?.toString())
                         else {
                             (detailSearchRc.adapter as HomePage.SearchSlotAdapter).updateList(emptyList())
                         }
@@ -293,29 +296,52 @@ class DetailRoot : AppCompatActivity() {
         }
         fun fabGroupAnimateIn(){
             Do after 200 milliseconds {
-                val t = Fade(Fade.MODE_IN)
-                t.duration=1600
+                val t = Slide(Gravity.BOTTOM)
+                t.duration=800
+                t.interpolator=FastOutSlowInInterpolator()
                 TransitionManager.beginDelayedTransition(coordinator,t)
                 fabGroup.visibility=View.VISIBLE
                 fab.visibility=View.VISIBLE
-                fabYoutube.visibility=View.VISIBLE
+            }
+            Do after 400 milliseconds {
+                val t = Slide(Gravity.BOTTOM)
+                t.duration=900
+                t.interpolator=FastOutSlowInInterpolator()
+                TransitionManager.beginDelayedTransition(coordinator,t)
                 fabShare.visibility=View.VISIBLE
             }
-
-        }
-        fun fabGroupAnimateOut(){
-            Do after 200 milliseconds {
-                val t = Fade(Fade.MODE_OUT)
+            Do after 600 milliseconds {
+                val t = Slide(Gravity.BOTTOM)
+                t.duration=1000
+                t.interpolator=FastOutSlowInInterpolator()
                 TransitionManager.beginDelayedTransition(coordinator,t)
-                fabGroup.visibility=View.GONE
-                fab.visibility=View.GONE
-                fabYoutube.visibility=View.GONE
-                fabShare.visibility=View.GONE
+                fabYoutube.visibility=View.VISIBLE
             }
         }
-
-
-
+        fun fabGroupAnimateOut(){
+            Do after 600 milliseconds {
+                val t = Slide(Gravity.BOTTOM)
+                t.duration=800
+                t.interpolator=FastOutLinearInInterpolator()
+                TransitionManager.beginDelayedTransition(coordinator,t)
+                fabGroup.visibility=View.INVISIBLE
+                fab.visibility=View.INVISIBLE
+            }
+            Do after 400 milliseconds {
+                val t = Slide(Gravity.BOTTOM)
+                t.duration=800
+                t.interpolator=FastOutLinearInInterpolator()
+                TransitionManager.beginDelayedTransition(coordinator,t)
+                fabShare.visibility=View.GONE
+            }
+            Do after 200 milliseconds {
+                val t = Slide(Gravity.BOTTOM)
+                t.duration=800
+                t.interpolator=FastOutLinearInInterpolator()
+                TransitionManager.beginDelayedTransition(coordinator,t)
+                fabYoutube.visibility=View.GONE
+            }
+        }
 
         return AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
             when {
