@@ -1,13 +1,17 @@
 package com.musashi.claymore.spike.spike
 
 
+import android.support.annotation.Keep
 import java.io.Serializable
 import kotlin.collections.HashMap
 
+@Keep
 data class Bonus(var bonus : String?=null, var image : String?=null, var link : String?=null, var name:String?=null,var producer:Producer?=null, var rating:String?=null,var review:String?=null):Serializable
+
+@Keep
 data class Producer(var id:String?=null, var name:String?=null,var image:String?=null,var link:String?=null):Serializable
 
-
+@Keep
 data class Slot(
         var id:String?=null,
         var bonus:HashMap<String,Bonus>? = null,
@@ -23,7 +27,7 @@ data class Slot(
         var tips: String?=null,
         var type: String?=null
 )
-
+@Keep
 data class SlotCard(
         var id:String?=null,
         var description:String?=null,
@@ -33,7 +37,7 @@ data class SlotCard(
         var time: Double?=null,
         var type: String?=null
 )
-
+@Keep
 data class SlotMenu(
         var description:String?=null,
         var name: String?=null
