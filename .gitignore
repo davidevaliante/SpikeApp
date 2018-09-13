@@ -9,3 +9,4 @@
 /captures
 /android.jks
 .externalNativeBuild
+/app/google-services.json
