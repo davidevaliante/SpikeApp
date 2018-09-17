@@ -7,14 +7,12 @@
     android:layout_height="match_parent"
     android:background="@color/mainBg"
     android:fitsSystemWindows="true"
-    android:focusable="true"
-    android:focusableInTouchMode="true"
     tools:context=".detailtwo.DetailRoot">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/homeAppar"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_height="450dp"
         android:background="@color/transparent"
         android:fitsSystemWindows="true"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
@@ -44,17 +42,22 @@
                 android:background="@color/black"
                 android:scaleType="centerCrop" />
 
-
-
             <ImageView
                 android:background="@color/shaded_black_alpha_90"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/popularSlotsRc"
+                app:layout_behavior="com.musashi.claymore.spike.spike.extensions.FixAppBarLayoutBehavior"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </android.support.v7.widget.RecyclerView>
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_gravity="center_vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <TextView
                     android:textColor="@color/redPrimary"
                     android:text="SPIKE SLOT"
@@ -125,6 +128,8 @@ www.aams.gov.it\nGioca responsabilmente"
                     android:visibility="gone" />
             </android.support.v7.widget.Toolbar>
 
+
+
         </net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
@@ -161,15 +166,11 @@ www.aams.gov.it\nGioca responsabilmente"
                     android:drawablePadding="16dp"
                     android:drawableRight="@drawable/ic_search"
                     android:focusable="true"
+                    app:layout_behavior="com.musashi.claymore.spike.spike.extensions.FixAppBarLayoutBehavior"
                     android:focusableInTouchMode="true"
+                    android:visibility="gone"
                     android:textColor="@color/white"></EditText>
 
-                <View
-                    android:id="@+id/searchFieldBottomLine"
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:layout_below="@id/searchFieldEditTextHome"
-                    android:background="@color/white" />
 
                 <com.wang.avi.AVLoadingIndicatorView
                     android:id="@+id/homeSearchIndicator"
@@ -186,7 +187,9 @@ www.aams.gov.it\nGioca responsabilmente"
 
 
         </android.support.v7.widget.CardView>
+
     </RelativeLayout>
+
 
 
     <android.support.v4.view.ViewPager

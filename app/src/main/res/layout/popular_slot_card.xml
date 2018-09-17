@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardBackgroundColor="@color/transparent"
+    android:layout_margin="8dp"
+    android:layout_width="80dp">
+    <LinearLayout
+        android:orientation="vertical"
+        android:background="@color/transparent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.mikhaellopez.circularimageview.CircularImageView
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:id="@+id/popularSlotImage"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            app:civ_border_color="@color/redPrimary"
+            app:civ_border_width="2dp"/>
+
+        <TextView
+            android:id="@+id/popularSlotTitle"
+            android:padding="8dp"
+            android:background="@color/transparent"
+            android:text="Prova Test"
+            android:textColor="@color/white"
+            android:fontFamily="@font/raleway_semibold"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:maxEms="13"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+</RelativeLayout>

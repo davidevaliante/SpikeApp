@@ -6,12 +6,14 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import aqua.extensions.goTo
 import aqua.extensions.log
+import aqua.extensions.logFrom
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.firebase.database.DataSnapshot
@@ -19,9 +21,11 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.musashi.claymore.spike.spike.*
+import com.musashi.claymore.spike.spike.R.id.popularSlotsRc
 import com.musashi.claymore.spike.spike.detailtwo.DetailRoot
 import kotlinx.android.synthetic.main.activity_home_page.*
 import kotlinx.android.synthetic.main.fragment_first.*
+import kotlinx.android.synthetic.main.popular_slot_card.view.*
 import kotlinx.android.synthetic.main.slot_card.view.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -43,8 +47,6 @@ class FirstFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        slotNode.keepSynced(true)
 
         slotRc.layoutManager = GridLayoutManager(activity, 2)
         slotRc.adapter = SlotAdapter(slotList, activity as Activity)
@@ -101,7 +103,7 @@ class FirstFragment : Fragment() {
     }
 }
 
-    class SlotAdapter(private var slotList: List<SlotCard>, val activity: Activity) : RecyclerView.Adapter<SlotAdapter.SlotViewholder>() {
+class SlotAdapter(private var slotList: List<SlotCard>, val activity: Activity) : RecyclerView.Adapter<SlotAdapter.SlotViewholder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SlotViewholder {
             val view = LayoutInflater.from(parent.context).inflate(R.layout.slot_card, parent, false)
             return SlotViewholder(view)

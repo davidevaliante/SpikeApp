@@ -39,6 +39,7 @@ import com.musashi.claymore.spike.spike.SlotCard
 import com.musashi.claymore.spike.spike.homepage.HomePage
 import kotlinx.android.synthetic.main.activity_home_page.*
 import kotlinx.android.synthetic.main.bonus_card.view.*
+import kotlinx.android.synthetic.main.detail_bonus.view.*
 
 
 class DetailRoot : AppCompatActivity() {
@@ -163,10 +164,9 @@ class DetailRoot : AppCompatActivity() {
         fun addViewsToBonusLayout(){
             slot?.bonus?.entries?.forEach {
                 val currentBonus = it.value
-                val cardToAdd = LayoutInflater.from(this).inflate(R.layout.bonus_card, bonusGroup, false)
-                cardToAdd.bonusTitle.text=currentBonus.name
-                cardToAdd.bonusDescription.text=currentBonus.bonus
-                Glide.with(this).load(currentBonus.getImageLinkFromName(ImgSize.BIG)).into(cardToAdd.bonusImage)
+                val cardToAdd = LayoutInflater.from(this).inflate(R.layout.detail_bonus, bonusGroup, false)
+                cardToAdd.detailBonusDescription.text = currentBonus.bonus
+                Glide.with(this).load(currentBonus.getImageLinkFromName(ImgSize.BIG)).into(cardToAdd.detailBonusImage)
                 cardToAdd.setOnClickListener {
                     val intent = Intent(Intent.ACTION_VIEW)
                     intent.data = Uri.parse(currentBonus.link)
