@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".BonusGuideActivity">
+
+    <ImageView
+        android:id="@+id/bonusGuideBg"
+        android:scaleType="centerCrop"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <TextView
+        android:id="@+id/loadFailtext"
+        android:textColor="@color/white"
+        android:text="Stiamo aggiornando questo articolo !"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <com.wang.avi.AVLoadingIndicatorView
+        android:layout_centerInParent="true"
+        android:id="@+id/guideLoaderIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:indicatorName="BallClipRotateIndicator"
+        />
+    <android.support.v4.widget.NestedScrollView
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="56dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <android.support.v7.widget.CardView
+            android:id="@+id/guideCard"
+            android:visibility="gone"
+            app:cardCornerRadius="16dp"
+            android:padding="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/bonusguideContent"
+                android:text="@string/lorem"
+                android:padding="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </android.support.v7.widget.CardView>
+
+    </android.support.v4.widget.NestedScrollView>
+
+    <LinearLayout
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:padding="16dp"
+            android:fontFamily="@font/raleway_semibold"
+            android:text="Indietro"
+            android:gravity="center"
+            android:id="@+id/bonusGuideBackBtn"
+            android:drawableLeft="@drawable/light_left_arrow"
+            android:background="@color/shaded_black_alpha_90"
+            android:textColor="@color/white"
+            android:layout_weight="0.5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+
+        <View
+            android:background="@color/redPrimary"
+            android:layout_width="2dp"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:padding="16dp"
+            android:text="Vai al bonus"
+            android:gravity="center"
+            android:fontFamily="@font/raleway_semibold"
+            android:drawableRight="@drawable/light_right_arrow"
+            android:id="@+id/bonusGuideExternalLinkBtn"
+            android:background="@color/shaded_black_alpha_90"
+            android:textColor="@color/white"
+            android:layout_weight="0.5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+</RelativeLayout>

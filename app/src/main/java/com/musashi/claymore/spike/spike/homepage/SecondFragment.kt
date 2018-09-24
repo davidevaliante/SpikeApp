@@ -7,11 +7,13 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import android.support.v4.content.ContextCompat.startActivity
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import aqua.extensions.goTo
 import aqua.extensions.log
 import aqua.extensions.showInfo
 import com.bumptech.glide.Glide
@@ -20,8 +22,10 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.musashi.claymore.spike.spike.Bonus
+import com.musashi.claymore.spike.spike.BonusGuideActivity
 
 import com.musashi.claymore.spike.spike.R
+import com.musashi.claymore.spike.spike.R.id.bonusRc
 import com.musashi.claymore.spike.spike.getImageLinkFromName
 import kotlinx.android.synthetic.main.bonus_card.view.*
 import kotlinx.android.synthetic.main.fragment_second.*
@@ -82,6 +86,15 @@ class SecondFragment : Fragment() {
 
         inner class BonusViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             fun bindView(data: Bonus) {
+                // solo se c'è una guida fai questa roba
+                if(data.guideId != null){
+                    itemView.bonusCardGuideButton.visibility = View.VISIBLE
+                    itemView.bonusCardGuideButton.setOnClickListener{
+                        val bundle = Bundle()
+                        bundle.putSerializable("BONUS_DATA", data)
+                        (activity as AppCompatActivity).goTo<BonusGuideActivity>(bundle)
+                    }
+                }
                 itemView.bonusTitle.text = data.name
                 itemView.bonusDescription.text = data.bonus
                 Glide.with(activity).load(data.getImageLinkFromName()).into(itemView.bonusImage)
@@ -90,6 +103,7 @@ class SecondFragment : Fragment() {
                     intent.data = Uri.parse(data.link)
                     activity.startActivity(intent)
                 }
+
             }
         }
     }

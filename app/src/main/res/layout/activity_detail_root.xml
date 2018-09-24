@@ -73,7 +73,7 @@
                         android:paddingEnd="16dp"
                         android:paddingStart="16dp"
                         android:paddingTop="8dp"
-                        android:text="Gioca"
+                        android:text="Gioca Gratis"
                         android:textSize="22sp" />
                 </android.support.v7.widget.CardView>
             </RelativeLayout>

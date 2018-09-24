@@ -46,13 +46,32 @@
                 android:background="@color/shaded_black_alpha_90"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/popularSlotsRc"
-                app:layout_behavior="com.musashi.claymore.spike.spike.extensions.FixAppBarLayoutBehavior"
+
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-            </android.support.v7.widget.RecyclerView>
+
+                <TextView
+                    android:fontFamily="@font/raleway_semibold"
+                    android:text="Le slot più popolari"
+                    android:gravity="center"
+                    android:paddingTop="16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/popularSlotsRc"
+                    app:layout_behavior="com.musashi.claymore.spike.spike.extensions.FixAppBarLayoutBehavior"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                </android.support.v7.widget.RecyclerView>
+
+            </LinearLayout>
+
+
             <LinearLayout
+                android:layout_marginTop="36dp"
                 android:orientation="vertical"
                 android:layout_gravity="center_vertical"
                 android:layout_width="match_parent"
@@ -66,12 +85,7 @@
                     android:gravity="center"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
-                <TextView
-                    android:text="Migliora la tua strategia di gioco"
-                    android:gravity="center"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+
 
             </LinearLayout>
 

@@ -13,7 +13,6 @@
 
         <com.mikhaellopez.circularimageview.CircularImageView
             android:layout_gravity="center"
-            android:layout_marginTop="16dp"
             android:id="@+id/popularSlotImage"
             android:layout_width="60dp"
             android:layout_height="60dp"

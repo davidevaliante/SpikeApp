@@ -8,7 +8,6 @@ import android.graphics.Typeface
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
-import com.musashi.claymore.spike.spike.R
 import kotlinx.android.synthetic.main.activity_detail_root.*
 import kotlinx.android.synthetic.main.detail_scrollview.*
 import android.support.transition.*
@@ -16,7 +15,6 @@ import android.text.Spanned
 import android.util.DisplayMetrics
 import android.view.*
 import com.bumptech.glide.Glide
-import com.musashi.claymore.spike.spike.Slot
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper
 import aqua.extensions.*
 import com.google.firebase.database.DataSnapshot
@@ -24,7 +22,6 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.musashi.claymore.spike.spike.constants.ImgSize
-import com.musashi.claymore.spike.spike.getImageLinkFromName
 import fromHtml
 import kotlinx.android.synthetic.main.tip_card.view.*
 import android.content.Intent
@@ -34,8 +31,9 @@ import android.support.v4.view.animation.FastOutSlowInInterpolator
 import android.support.v7.widget.LinearLayoutManager
 import android.text.Editable
 import android.text.TextWatcher
+import com.musashi.claymore.spike.spike.*
+import com.musashi.claymore.spike.spike.R
 import com.musashi.claymore.spike.spike.R.id.*
-import com.musashi.claymore.spike.spike.SlotCard
 import com.musashi.claymore.spike.spike.homepage.HomePage
 import kotlinx.android.synthetic.main.activity_home_page.*
 import kotlinx.android.synthetic.main.bonus_card.view.*
@@ -162,9 +160,16 @@ class DetailRoot : AppCompatActivity() {
 
         // aggiunge dinamicamente le carte dei bonus
         fun addViewsToBonusLayout(){
-            slot?.bonus?.entries?.forEach {
-                val currentBonus = it.value
+            slot?.bonus?.entries?.forEachIndexed {
+                index, mutableEntry ->
+                val currentBonus = mutableEntry.value
+
                 val cardToAdd = LayoutInflater.from(this).inflate(R.layout.detail_bonus, bonusGroup, false)
+                cardToAdd.goToGuideButton.setOnClickListener {
+                    val bundle = Bundle()
+                    bundle.putSerializable("BONUS_DATA", currentBonus)
+                    goTo<BonusGuideActivity>(bundle)
+                }
                 cardToAdd.detailBonusDescription.text = currentBonus.bonus
                 Glide.with(this).load(currentBonus.getImageLinkFromName(ImgSize.BIG)).into(cardToAdd.detailBonusImage)
                 cardToAdd.setOnClickListener {

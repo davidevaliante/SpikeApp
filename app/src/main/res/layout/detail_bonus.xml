@@ -28,6 +28,7 @@
             android:layout_height="wrap_content" />
 
         <Button
+            android:id="@+id/goToGuideButton"
             android:text="Leggi la guida"
             android:textColor="@color/white"
             android:background="@color/redPrimary"

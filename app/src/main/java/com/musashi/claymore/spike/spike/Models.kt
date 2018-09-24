@@ -6,7 +6,21 @@ import java.io.Serializable
 import kotlin.collections.HashMap
 
 @Keep
-data class Bonus(var bonus : String?=null, var image : String?=null, var link : String?=null, var name:String?=null,var producer:Producer?=null, var rating:String?=null,var review:String?=null):Serializable
+data class Bonus(var bonus : String?=null,
+                 var image : String?=null,
+                 var link : String?=null,
+                 var name:String?=null,
+                 var producer:Producer?=null,
+                 var rating:String?=null,
+                 var review:String?=null,
+                 var guideId:String?=null):Serializable
+
+@Keep
+data class BonusGuide(
+        var bonus:Bonus?=null,
+        var content:String?=null,
+        var time:Double?=null
+)
 
 @Keep
 data class Producer(var id:String?=null, var name:String?=null,var image:String?=null,var link:String?=null):Serializable
