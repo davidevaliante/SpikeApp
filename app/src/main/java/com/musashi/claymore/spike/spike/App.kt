@@ -20,4 +20,8 @@ class App : Application() {
         MultiDex.install(this)
         FirebaseDatabase.getInstance().setPersistenceEnabled(true)
     }
+
+    fun get(){
+        return
+    }
 }

@@ -78,7 +78,7 @@ class HomePage : AppCompatActivity() {
         Glide.with(this).load(HEADER_IMG_URL).thumbnail(0.1f).into(slidingImageView)
 
         // tabs
-        viewPager.adapter=TabsAdapter(supportFragmentManager, listOf(FirstFragment(),SecondFragment()))
+        viewPager.adapter=TabsAdapter(supportFragmentManager, listOf(FirstFragment(),SecondFragment(), ThirdFragment()))
         tabs.setupWithViewPager(viewPager)
 
         // recyclerview
@@ -101,11 +101,11 @@ class HomePage : AppCompatActivity() {
                 .addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         searchResults.removeAll { it!=null }
-                        snapshot.children.mapNotNullTo(searchResults, {
+                        snapshot.children.mapNotNullTo(searchResults) {
                             val result = it.getValue<SlotCard>(SlotCard::class.java)
                             result?.id=it.key
                             result
-                        })
+                        }
                         (searchRc.adapter as SearchSlotAdapter).updateList(searchResults)
                         isSearchingSlot=false
                         homeSearchIndicator.smoothToHide()
@@ -141,7 +141,7 @@ class HomePage : AppCompatActivity() {
 
 class TabsAdapter(fragmentManager: FragmentManager, private val frags: List<Fragment>) :
         FragmentStatePagerAdapter(fragmentManager) {
-    val tabTitles = listOf("Slot", "Bonus")
+    val tabTitles = listOf("Slot", "Bonus", "Articoli")
     // 2
     override fun getItem(position: Int): Fragment {
         return frags[position]
@@ -212,13 +212,24 @@ class SearchSlotAdapter(var slotList: List<SlotCard>, val activity: Activity)
 
     inner class SlotCardViewholder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bindView(data: SlotCard) {
-            itemView.searchCardTitle.text = data.name?.toLowerCase()?.capitalize()
-            itemView.searchCardProducer.text = data.producer
-            itemView.setOnClickListener {
-                val bundle = Bundle()
-                bundle.putString("SLOT_ID", data.id)
-                (activity as AppCompatActivity).goTo<DetailRoot>(bundle)
+            itemView.apply {
+                if (data?.name?.length!! > 20)
+                    searchCardTitle.text = "${data.name?.toLowerCase()?.capitalize()?.take(20)}..."
+                else
+                    searchCardTitle.text = "${data.name?.toLowerCase()?.capitalize()?.take(20)}"
+                searchCardProducer.text = data.producer
+                Picasso.get()
+                        .load(data?.getImageLinkFromName())
+                        .resize(150, 150)
+                        .centerCrop()
+                        .into(searchCardImage)
+                setOnClickListener {
+                    val bundle = Bundle()
+                    bundle.putString("SLOT_ID", data.id)
+                    (activity as AppCompatActivity).goTo<DetailRoot>(bundle)
+                }
             }
+
         }
     }
 }

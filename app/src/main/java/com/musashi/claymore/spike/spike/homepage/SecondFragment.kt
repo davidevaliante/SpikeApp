@@ -63,7 +63,7 @@ class SecondFragment : Fragment() {
     }
 
     private fun bindData(fetchedList:Iterable<DataSnapshot>){
-        fetchedList.mapNotNullTo(bonusList, {it.getValue<Bonus>(Bonus::class.java)})
+        fetchedList.mapNotNullTo(bonusList) {it.getValue<Bonus>(Bonus::class.java)}
         (bonusRc.adapter as BonusAdapter).updateList(bonusList)
     }
 

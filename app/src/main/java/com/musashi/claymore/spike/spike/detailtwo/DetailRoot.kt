@@ -38,6 +38,7 @@ import com.musashi.claymore.spike.spike.homepage.HomePage
 import kotlinx.android.synthetic.main.activity_home_page.*
 import kotlinx.android.synthetic.main.bonus_card.view.*
 import kotlinx.android.synthetic.main.detail_bonus.view.*
+import setClickableHtmlWithImages
 
 
 class DetailRoot : AppCompatActivity() {
@@ -102,11 +103,11 @@ class DetailRoot : AppCompatActivity() {
         .addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 searchResults.removeAll { it!=null }
-                snapshot.children.mapNotNullTo(searchResults, {
+                snapshot.children.mapNotNullTo(searchResults) {
                     val result = it.getValue<SlotCard>(SlotCard::class.java)
                     result?.id=it.key
                     result
-                })
+                }
                 (detailSearchRc.adapter as HomePage.SearchSlotAdapter).updateList(searchResults)
                 detailSearchIndicator.smoothToHide()
                 isSearchingSlot=false
@@ -184,7 +185,7 @@ class DetailRoot : AppCompatActivity() {
 
         Glide.with(this).load(slot?.getImageLinkFromName(size = ImgSize.BIG)).into(collapsingImg)
         Glide.with(this).load(AAMS_LOGO_URL).into(detail_aams_logo)
-        descriptionText.text = slot?.description?.fromHtml()
+        descriptionText.setClickableHtmlWithImages(slot?.description, this)
         tecnicalsText.text = buildTecnicalString(slot?.tecnicals)
         addViewsToTipsLayout()
         addViewsToBonusLayout()

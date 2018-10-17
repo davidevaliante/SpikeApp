@@ -23,6 +23,14 @@ data class BonusGuide(
 )
 
 @Keep
+data class Article(
+        var id:String?=null,
+        var content:String?=null,
+        var time:Double?=null,
+        var title:String?=null
+):Serializable
+
+@Keep
 data class Producer(var id:String?=null, var name:String?=null,var image:String?=null,var link:String?=null):Serializable
 
 @Keep

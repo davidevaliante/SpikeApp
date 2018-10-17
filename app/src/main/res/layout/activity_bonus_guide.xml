@@ -16,6 +16,7 @@
         android:id="@+id/loadFailtext"
         android:textColor="@color/white"
         android:text="Stiamo aggiornando questo articolo !"
+        android:visibility="gone"
         android:layout_centerInParent="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
@@ -35,6 +36,7 @@
         android:layout_height="match_parent">
         <android.support.v7.widget.CardView
             android:id="@+id/guideCard"
+            android:layout_marginTop="16dp"
             android:visibility="gone"
             app:cardCornerRadius="16dp"
             android:padding="16dp"

@@ -41,6 +41,16 @@ inline fun <reified T : Activity> AppCompatActivity.goTo(bundle : Bundle? = null
     }
 }
 
+inline fun <reified T : Activity> Activity.goTo(bundle : Bundle? = null ){
+    val intent = Intent(this, T::class.java)
+    if(bundle == null)
+        startActivity(intent)
+    else {
+        intent.putExtras(bundle)
+        startActivity(intent)
+    }
+}
+
 fun Activity.hideKeyboard() {
     hideKeyboard(if (currentFocus == null) View(this) else currentFocus)
 }
