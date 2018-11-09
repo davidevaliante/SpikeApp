@@ -29,13 +29,11 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.musashi.claymore.spike.spike.Slot
-import com.musashi.claymore.spike.spike.R
+import com.musashi.claymore.spike.spike.*
 import com.musashi.claymore.spike.spike.R.id.*
-import com.musashi.claymore.spike.spike.SlotCard
+import com.musashi.claymore.spike.spike.constants.ImgSize
 import com.musashi.claymore.spike.spike.detailtwo.DetailRoot
 import com.musashi.claymore.spike.spike.extensions.FixAppBarLayoutBehavior
-import com.musashi.claymore.spike.spike.getImageLinkFromName
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_detail_root.*
 import kotlinx.android.synthetic.main.activity_home_page.*
@@ -55,6 +53,8 @@ class HomePage : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home_page)
+
+        // makeSlotsMenuNameUpperCase()
 
         val node= FirebaseDatabase.getInstance().reference.child("SlotsCard").child("it")
 
@@ -92,15 +92,37 @@ class HomePage : AppCompatActivity() {
         popularSlotsRc.isNestedScrollingEnabled=true
     }
 
+    private fun makeSlotsMenuNameUpperCase(){
+        val fb = FirebaseDatabase.getInstance().reference
+
+        fb.child("SlotsMenu").child("it").addListenerForSingleValueEvent(object : ValueEventListener{
+            override fun onDataChange(snap: DataSnapshot) {
+                val x = mutableListOf<SlotMenu>()
+                snap.children.forEach {
+                    val x = it.getValue(SlotMenu::class.java)
+                    x?.name = x?.name?.toUpperCase()
+                    val k = it?.key
+                    fb.child("SlotsMenu").child("it").child("$k").setValue(x)
+                }
+                x.forEach { it?.logFrom(this@HomePage) }
+            }
+            override fun onCancelled(p0: DatabaseError) {
+            }
+        })
+    }
+
     private fun searchSlotByName(s:String){
         isSearchingSlot=true
         homeSearchIndicator.smoothToShow()
         val string = s.toUpperCase()
-        FirebaseDatabase.getInstance().reference.child("SlotsCard").child("it")
-                .orderByChild("name").startAt(string).endAt("$string\uf8ff")
+        FirebaseDatabase.getInstance().reference.child("SlotsMenu").child("it")
+                .orderByChild("name").startAt(string).endAt("$string" +"\uf8ff")
                 .addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         searchResults.removeAll { it!=null }
+                        snapshot.children.forEach {
+                            (it.getValue(SlotMenu::class.java))!!.logFrom(this@HomePage)
+                        }
                         snapshot.children.mapNotNullTo(searchResults) {
                             val result = it.getValue<SlotCard>(SlotCard::class.java)
                             result?.id=it.key

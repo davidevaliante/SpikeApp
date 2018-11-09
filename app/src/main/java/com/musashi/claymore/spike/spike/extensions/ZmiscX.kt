@@ -46,12 +46,16 @@ import kotlin.text.Regex.Companion.escape
 // per trasformare in snakeCase il nome di una slot
 fun String.toSnakeCase():String{
     var f = ""
+    // per l'apostrofo
+    val x = this.replace("'"," ")
     val re = Regex("[^A-Za-z0-9 ]")
-    val splitted = this.split("\\s+".toRegex())
+    // val re = Regex("[^\\p{L}0-9']+")
+    val splitted = x.split("\\s+".toRegex())
     val cleanedWords = splitted.map { re.replace(it.trim(),"") }
     cleanedWords.forEachIndexed{ index, x ->
         f += if(index==0) "${x.toLowerCase()}" else "_${x.toLowerCase()}"
     }
+    if (this.contains("'")) Log.d("TAGGHERONE", f)
     return f
 }
 

@@ -85,7 +85,8 @@ class FirstFragment : Fragment() {
                 .addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         snapshot.children.reversed().forEach {
-                            val slot = it.getValue<SlotCard>(SlotCard::class.java)
+                            it.logFrom(this@FirstFragment)
+                            val slot = it.getValue(SlotCard::class.java)
                             slot?.id = it.key
                             if(slot!=null && slot !in slotList) slotList.add(slot)
                         }
