@@ -25,5 +25,6 @@ object StorageFolders{
     const val Slot = "SlotImages%2F"
     const val Bonus = "BonusImages%2F"
     const val Producer = "ProducerImages%2F"
+    const val ArticleImages = "ArticleImages%2f"
 }
 

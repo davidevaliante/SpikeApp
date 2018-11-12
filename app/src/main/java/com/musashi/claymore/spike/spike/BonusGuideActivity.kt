@@ -13,6 +13,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.squareup.picasso.Picasso
 import fromHtml
 import kotlinx.android.synthetic.main.activity_bonus_guide.*
 import setClickableHtmlWithImages
@@ -31,7 +32,9 @@ class BonusGuideActivity : AppCompatActivity() {
             article.let {
                 guideLoaderIndicator.smoothToHide()
                 loadFailtext.visibility=View.GONE
-
+                Picasso.get().load(article.getImageLinkFromName()).into(articleImage)
+                articleTitle.visibility = View.VISIBLE
+                articleTitle.text = article.title
                 guideCard.visibility = View.VISIBLE
                 bonusguideContent.setClickableHtmlWithImages("${article.title} \n${article.content}", this)
                 bonusGuideBackBtn.setOnClickListener { finish() }
@@ -39,6 +42,8 @@ class BonusGuideActivity : AppCompatActivity() {
             }
         }else{
             val bonusData = intent.extras.getSerializable("BONUS_DATA") as Bonus
+            articleImage.visibility = View.GONE
+            imageGuideCard.visibility = View.GONE
             if(bonusData.guideId != null){
                 FirebaseDatabase.getInstance().reference.child("BonusGuides").child("it").child(bonusData.guideId as String)
                         .addListenerForSingleValueEvent(object :ValueEventListener{

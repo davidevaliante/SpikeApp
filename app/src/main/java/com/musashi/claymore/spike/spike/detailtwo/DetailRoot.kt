@@ -125,17 +125,33 @@ class DetailRoot : AppCompatActivity() {
                     val currentSlot = snapshot.getValue(Slot::class.java)
                     if(currentSlot!=null){
                         // per i pulsanti
-                        val bundle = Bundle()
-                        bundle.putString("PLAY_LINK",currentSlot.linkPlay)
-                        bundle.putSerializable("BONUS_LIST", currentSlot.bonus)
-                        playButtonCenter.setOnClickListener { goTo<TrySlotActivity>(bundle) }
-                        fab.setOnClickListener { goTo<TrySlotActivity>(bundle) }
+                        if(currentSlot.type == "GRATIS"){
+                            val bundle = Bundle()
+                            bundle.putString("PLAY_LINK",currentSlot.linkPlay)
+                            bundle.putSerializable("BONUS_LIST", currentSlot.bonus)
+                            playButtonCenter.setOnClickListener { goTo<TrySlotActivity>(bundle) }
+                            fab.setOnClickListener { goTo<TrySlotActivity>(bundle) }
 
-                        fabYoutube.setOnClickListener {
-                            val intent = Intent(Intent.ACTION_VIEW)
-                            intent.data = Uri.parse(currentSlot.linkYoutube)
-                            startActivity(intent)
+                            fabYoutube.setOnClickListener {
+                                val intent = Intent(Intent.ACTION_VIEW)
+                                intent.data = Uri.parse(currentSlot.linkYoutube)
+                                startActivity(intent)
+                            }
+                        }else{
+                            val bundle = Bundle()
+                            val onlineVersionId = currentSlot.linkPlay?.split("/")?.last()
+                            bundle.putString("SLOT_ID",onlineVersionId)
+                            playButtonCenterText.text = "Prova la versione Online"
+                            playButtonCenter.setOnClickListener { goTo<DetailRoot>(bundle) }
+                            fab.setOnClickListener { goTo<DetailRoot>(bundle) }
+
+                            fabYoutube.setOnClickListener {
+                                val intent = Intent(Intent.ACTION_VIEW)
+                                intent.data = Uri.parse(currentSlot.linkYoutube)
+                                startActivity(intent)
+                            }
                         }
+
 
                         // per l'UI
                         bindDataToUI(currentSlot)
@@ -203,7 +219,7 @@ class DetailRoot : AppCompatActivity() {
     }
 
     private fun setAllOnClickListners(){
-        fabShare.setOnClickListener { showInfo("share pagina su whatsapp/telegram/Facebook") }
+        fabShare.setOnClickListener { showInfo("Disponibile a breve !") }
         backArrow.setOnClickListener {
             appBarLayout.removeOnOffsetChangedListener(customOffsetChangedListener)
             finish()

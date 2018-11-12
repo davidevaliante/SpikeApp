@@ -115,13 +115,13 @@ class HomePage : AppCompatActivity() {
         isSearchingSlot=true
         homeSearchIndicator.smoothToShow()
         val string = s.toUpperCase()
-        FirebaseDatabase.getInstance().reference.child("SlotsMenu").child("it")
+        FirebaseDatabase.getInstance().reference.child("SlotsCard").child("it")
                 .orderByChild("name").startAt(string).endAt("$string" +"\uf8ff")
                 .addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         searchResults.removeAll { it!=null }
                         snapshot.children.forEach {
-                            (it.getValue(SlotMenu::class.java))!!.logFrom(this@HomePage)
+                            (it.getValue(SlotCard::class.java))!!.logFrom(this@HomePage)
                         }
                         snapshot.children.mapNotNullTo(searchResults) {
                             val result = it.getValue<SlotCard>(SlotCard::class.java)
@@ -240,6 +240,11 @@ class SearchSlotAdapter(var slotList: List<SlotCard>, val activity: Activity)
                 else
                     searchCardTitle.text = "${data.name?.toLowerCase()?.capitalize()?.take(20)}"
                 searchCardProducer.text = data.producer
+                if(data.type == "GRATIS"){
+                    searchCardType.text = "Online"
+                }else{
+                    searchCardType.text = "Bar"
+                }
                 Picasso.get()
                         .load(data?.getImageLinkFromName())
                         .resize(150, 150)

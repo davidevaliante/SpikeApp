@@ -23,6 +23,7 @@
 
 # Add this global rule
 -keepattributes Signature
+-dontwarn org.conscrypt.*
 
 
 

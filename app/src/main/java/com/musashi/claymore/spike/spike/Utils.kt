@@ -17,6 +17,18 @@ fun Slot.getImageLinkFromName(size:ImgSize=ImgSize.MEDIUM):String{
     }
 }
 
+fun Article.getImageLinkFromName(size:ImgSize=ImgSize.MEDIUM):String{
+    val baseUrl = "https://firebasestorage.googleapis.com/v0/b/spike-2481d.appspot.com/o/"
+    val urlEnd = "?alt=media"
+    val small="64"
+    val medium="250"
+    return  when(size){
+        ImgSize.SMALL -> "$baseUrl${StorageFolders.ArticleImages}${this.title?.toSnakeCase()}_article_image$urlEnd"
+        ImgSize.MEDIUM -> "$baseUrl${StorageFolders.ArticleImages}${this.title?.toSnakeCase()}_article_image$urlEnd"
+        ImgSize.BIG -> "$baseUrl${StorageFolders.ArticleImages}${this.title?.toSnakeCase()}_article_image$urlEnd"
+    }
+}
+
 fun SlotCard.getImageLinkFromName(size:ImgSize=ImgSize.MEDIUM):String{
     val baseUrl = "https://firebasestorage.googleapis.com/v0/b/spike-2481d.appspot.com/o/"
     val urlEnd = "?alt=media"
