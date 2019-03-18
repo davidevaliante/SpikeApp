@@ -2,8 +2,10 @@ package com.musashi.claymore.spike.spike.homepage
 
 
 import android.app.Activity
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
@@ -129,7 +131,14 @@ class SlotAdapter(private var slotList: List<SlotCard>, val activity: Activity) 
                     val dateString = format.format(time)
                     itemView.cardSlotTime.text= "Aggiornato $dateString"
                 }
+                if(data?.type == "BAR"){
+                    itemView.slotCardType.text = "Slot Bar"
+                    itemView.slotCardType.background = ColorDrawable(ContextCompat.getColor(activity!!, R.color.redPrimary))
+                }else {
+                    itemView.slotCardType.text = "Slot Online"
+                    itemView.slotCardType.background = ColorDrawable(ContextCompat.getColor(activity!!, R.color.colorPrimary))
 
+                }
                 itemView.cardSlotTitle.text = data.name?.toLowerCase()?.capitalize()
                 itemView.cardSlotRating.text = "Voto ${data.rating}"
                 itemView.setOnClickListener {

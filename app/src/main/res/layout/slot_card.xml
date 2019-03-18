@@ -6,11 +6,21 @@
     android:layout_marginEnd="8dp"
     app:cardCornerRadius="4dp"
     android:layout_width="match_parent"
-    android:layout_height="220dp">
+    android:layout_height="260dp">
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/slotCardType"
+            android:text="Slot Online"
+            android:gravity="center"
+            android:background="@color/redPrimary"
+            android:textColor="@color/white"
+            android:padding="4dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
         <ImageView
             android:scaleType="centerCrop"

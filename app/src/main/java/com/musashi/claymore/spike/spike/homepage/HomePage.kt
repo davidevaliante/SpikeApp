@@ -241,9 +241,9 @@ class SearchSlotAdapter(var slotList: List<SlotCard>, val activity: Activity)
                     searchCardTitle.text = "${data.name?.toLowerCase()?.capitalize()?.take(20)}"
                 searchCardProducer.text = data.producer
                 if(data.type == "GRATIS"){
-                    searchCardType.text = "Online"
+                    searchCardType.text = "Slot Online"
                 }else{
-                    searchCardType.text = "Bar"
+                    searchCardType.text = "Slot Bar"
                 }
                 Picasso.get()
                         .load(data?.getImageLinkFromName())

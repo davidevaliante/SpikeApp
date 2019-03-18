@@ -53,6 +53,17 @@ fun Bonus.getImageLinkFromName(size:ImgSize=ImgSize.BIG):String{
     }
 }
 
+
+
+fun Bonus.getInternalImageLinkFromName(size:ImgSize=ImgSize.BIG):String{
+    val baseUrl = "https://firebasestorage.googleapis.com/v0/b/spike-2481d.appspot.com/o/"
+    val urlEnd = "?alt=media"
+
+
+    return "$baseUrl${StorageFolders.BonusInternalImage}bonus_internal_${this.name?.toSnakeCase()}$urlEnd"
+
+}
+
 fun Producer.getImageLinkFromName(size:ImgSize=ImgSize.MEDIUM):String{
     val baseUrl = "https://firebasestorage.googleapis.com/v0/b/spike-2481d.appspot.com/o/"
     val urlEnd = "?alt=media"
